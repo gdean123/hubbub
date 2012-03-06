@@ -4,26 +4,17 @@
 
 common: &common
   adapter: postgresql
-  database: hubbub_development
   username: postgres
   pool: 5
   timeout: 5000
 
 development:
-  adapter: postgresql
+  <<: *common
   database: hubbub_development
-  username: postgres
-  password: summer123
-  pool: 5
-  timeout: 5000
 
 test: &test
-  adapter: postgresql
+  <<: *common
   database: hubbub_test
-  username: postgres
-  password: summer123
-  pool: 5
-  timeout: 5000
 
 production:
   <<: *common

@@ -10,3 +10,4 @@ tmp/*
 *.dia~
 rake/*
 coverage/*
+config/database.yml
