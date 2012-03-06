@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Description:</b>
+  <%= @item.description %>
+</p>
+
+<p>
+  <b>Parent:</b>
+  <%= @item.parent_id %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @item.user_id %>
+</p>
+
+<p>
+  <b>Details:</b>
+  <%= @item.details %>
+</p>
+
+<p>
+  <b>Recurring:</b>
+  <%= @item.recurring %>
+</p>
+
+<p>
+  <b>Tags:</b>
+  <%= @item.tags %>
+</p>
+
+<p>
+  <b>Location:</b>
+  <%= @item.location %>
+</p>
+
+<p>
+  <b>Priority:</b>
+  <%= @item.priority %>
+</p>
+
+<p>
+  <b>Completion status:</b>
+  <%= @item.completion_status %>
+</p>
+
+<p>
+  <b>Due date:</b>
+  <%= @item.due_date %>
+</p>
+
+
+<%= link_to 'Edit', edit_item_path(@item) %> |
+<%= link_to 'Back', items_path %>
