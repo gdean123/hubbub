@@ -1,31 +1,47 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.12'
+gem 'pg'
+gem 'heroku'
+gem 'jquery-rails'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+# Required on Windows
+gem "rake", "0.8.7"
+gem 'ffi', '1.0.9'
 
-gem 'sqlite3'
+# Gems used only for assets and not required
+# in production environments by default.
 
-# Use unicorn as the web server
-# gem 'unicorn'
+group :development do
+  gem 'ruby-debug-base19x'
+	gem 'ruby-debug-ide'
 
-# Deploy with Capistrano
-# gem 'capistrano'
+	platforms :mswin, :mingw do
+		gem 'win32console'
+	end
 
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-# gem 'ruby-debug19', :require => 'ruby-debug'
+#	gem 'guard'
+#  gem 'guard-coffeescript'
+#  gem 'guard-rspec'
+#	gem 'guard-jslint-on-rails'
+#	gem 'ruby_gntp'
+end
 
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'nokogiri'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
+group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'rspec-rails'
+  gem 'jasmine'
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'cucumber-rails'
+  gem 'database_cleaner'
 
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
-# end
+  gem 'jslint_on_rails'
+
+	gem 'simplecov', :require => false
+
+end
+
+group :test do
+  gem 'turn', '0.8.2', :require => false
+end
