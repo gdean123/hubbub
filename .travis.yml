@@ -1,0 +1,22 @@
+language: ruby
+
+rvm:
+  - 1.9.2
+
+bundler_args: --without development
+
+env:
+  - DB=postgres
+
+before_script:
+  - "sh -e /etc/init.d/xvfb start"
+  - "psql -c 'create database hubbub_test;' -U postgres"
+
+script: "bundle exec rake travis"
+
+notifications:
+    email:
+      - gdean123@gmail.com
+      - craig.hokanson@sv.cmu.edu
+      - shekar.pasumarthi@sv.cmu.edu
+      - surbhi.dangi@west.cmu.edu
