@@ -24,7 +24,9 @@ describe ItemsController do
   # Item. As you add validations to Item, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    {}
+    {
+        :description => "a description"
+    }
   end
   
   # This should return the minimal set of values that should be in the session
@@ -35,12 +37,11 @@ describe ItemsController do
   end
 
   describe "GET index" do
-    it "assigns all items as @items" do
+    it "returns JSON string containing all items" do
       item = Item.create! valid_attributes
-      @expected = { 
-       }.to_json
-      get :index, {:format => :json}, valid_session
-      response.body.should == @expected
+      get :index, valid_session
+      json = JSON.parse response.body
+      json.should_not be_empty
     end
   end
 
