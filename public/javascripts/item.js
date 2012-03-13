@@ -17,7 +17,7 @@ $(function(){
       // return {
       //   order: Items.nextOrder()
       // };
-    },
+    }
 
     // // Toggle the `done` state of this todo item.
     // toggle: function() {
@@ -34,7 +34,7 @@ $(function(){
 
     // Reference to this collection's model.
     model: Item,
-    url :'/items',
+    url :'/items'
 
     // Save all of the todo items under the `"todos"` namespace.
     // localStorage: new Store("todos"),
@@ -64,7 +64,7 @@ $(function(){
   });
 
   // Create our global collection of **Items**.
-  window.Items = new ItemList;
+  window.Items = new ItemList();
 
   // Items View
   // --------------
@@ -127,7 +127,9 @@ $(function(){
 
     // If you hit `enter`, we're through editing the item.
     updateOnEnter: function(e) {
-      if (e.keyCode == 13) this.close();
+      if (e.keyCode == 13) {
+        this.close();
+      }
     },
 
     // Remove this view from the DOM.
@@ -179,7 +181,7 @@ $(function(){
     // of the app doesn't change.
     render: function() {
       this.$('#todo-stats').html(this.statsTemplate({
-        total:      Items.length,
+        total:      Items.length
         // done:       Items.done().length,
         // remaining:  Items.remaining().length
       }));
@@ -198,10 +200,10 @@ $(function(){
     },
 
     // If you hit return in the main input field, and there is text to save,
-    // create new **Todo** model persisting it to *localStorage*.
+    // create new **Item** model persisting it to *localStorage*.
     createOnEnter: function(e) {
       var text = this.input.val();
-      if (!text || e.keyCode != 13) return;
+      if (!text || e.keyCode != 13) { return; }
       Items.create({text: text});
       this.input.val('');
     },
@@ -218,8 +220,12 @@ $(function(){
       var tooltip = this.$(".ui-tooltip-top");
       var val = this.input.val();
       tooltip.fadeOut();
-      if (this.tooltipTimeout) clearTimeout(this.tooltipTimeout);
-      if (val == '' || val == this.input.attr('placeholder')) return;
+      if (this.tooltipTimeout) {
+        clearTimeout(this.tooltipTimeout);
+      }
+      if ((val === '') || (val === this.input.attr('placeholder'))) {
+        return;
+      }
       var show = function(){ tooltip.show().fadeIn(); };
       this.tooltipTimeout = _.delay(show, 1000);
     }
@@ -227,6 +233,6 @@ $(function(){
   });
 
   // Finally, we kick things off by creating the **App**.
-  window.App = new AppView;
+  window.App = new AppView();
 
 });
