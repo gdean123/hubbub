@@ -37,8 +37,10 @@ describe ItemsController do
   describe "GET index" do
     it "assigns all items as @items" do
       item = Item.create! valid_attributes
-      get :index, {}, valid_session
-      assigns(:items).should eq([item])
+      @expected = { 
+       }.to_json
+      get :index, {:format => :json}, valid_session
+      response.body.should == @expected
     end
   end
 
