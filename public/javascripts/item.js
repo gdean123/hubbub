@@ -14,15 +14,7 @@ $(function(){
 
     // Default attributes for an item.
     defaults: function() {
-      // return {
-      //   order: Items.nextOrder()
-      // };
     }
-
-    // // Toggle the `done` state of this todo item.
-    // toggle: function() {
-    //   this.save({done: !this.get("done")});
-    // }
 
   });
 
@@ -31,35 +23,9 @@ $(function(){
 
   // The collection of Items is backed by postrgresql.
   window.ItemList = Backbone.Collection.extend({
-
     // Reference to this collection's model.
     model: Item,
     url :'/items'
-
-    // Save all of the todo items under the `"todos"` namespace.
-    // localStorage: new Store("todos"),
-
-    // Filter down the list of all todo items that are finished.
-    // done: function() {
-    //   return this.filter(function(todo){ return todo.get('done'); });
-    // },
-
-    // Filter down the list to only todo items that are still not finished.
-    // remaining: function() {
-    //   return this.without.apply(this, this.done());
-    // },
-
-    // We keep the Todos in sequential order, despite being saved by unordered
-    // GUID in the database. This generates the next order number for new items.
-    // nextOrder: function() {
-    //   if (!this.length) return 1;
-    //   return this.last().get('order') + 1;
-    // },
-
-    // Todos are sorted by their original insertion order.
-    // comparator: function(todo) {
-    //   return todo.get('order');
-    // }
 
   });
 
@@ -81,12 +47,12 @@ $(function(){
     // The DOM events specific to an item.
     events: {
       // "click .check"              : "toggleDone",
-      "dblclick div.todo-text"    : "edit",
-      "click span.todo-destroy"   : "clear",
-      "keypress .todo-input"      : "updateOnEnter"
+      "dblclick div.item-text"    : "edit",
+      "click span.item-destroy"   : "clear",
+      "keypress .item-input"      : "updateOnEnter"
     },
 
-    // The TodoView listens for changes to its model, re-rendering.
+    // The ItemView listens for changes to its model, re-rendering.
     initialize: function() {
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
@@ -103,15 +69,10 @@ $(function(){
     // we use `jQuery.text` to set the contents of the todo item.
     setText: function() {
       var text = this.model.get('text');
-      this.$('.todo-text').text(text);
-      this.input = this.$('.todo-input');
+      this.$('.item-text').text(text);
+      this.input = this.$('.item-input');
       this.input.bind('blur', _.bind(this.close, this)).val(text);
     },
-
-    // Toggle the `"done"` state of the model.
-    // toggleDone: function() {
-    //   this.model.toggle();
-    // },
 
     // Switch this view into `"editing"` mode, displaying the input field.
     edit: function() {
@@ -152,23 +113,19 @@ $(function(){
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#todoapp"),
-
-    // Our template for the line of statistics at the bottom of the app.
-    statsTemplate: _.template($('#stats-template').html()),
+    el: $("#itemapp"),
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "keypress #new-todo":  "createOnEnter",
-      "keyup #new-todo":     "showTooltip",
-      "click .todo-clear a": "clearCompleted"
+      "keypress #new-item":  "createOnEnter",
+      "click .item-clear a": "clearCompleted"
     },
 
     // At initialization we bind to the relevant events on the `Todos`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-      this.input    = this.$("#new-todo");
+      this.input    = this.$("#new-item");
 
       Items.bind('add',   this.addOne, this);
       Items.bind('reset', this.addAll, this);
@@ -180,18 +137,13 @@ $(function(){
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      this.$('#todo-stats').html(this.statsTemplate({
-        total:      Items.length
-        // done:       Items.done().length,
-        // remaining:  Items.remaining().length
-      }));
     },
 
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     addOne: function(item) {
       var view = new ItemView({model: item});
-      $("#todo-list").append(view.render().el);
+      $("#item-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
@@ -212,24 +164,7 @@ $(function(){
     clearCompleted: function() {
       _.each(Items.done(), function(item){ item.destroy(); });
       return false;
-    },
-
-    // Lazily show the tooltip that tells you to press `enter` to save
-    // a new todo item, after one second.
-    showTooltip: function(e) {
-      var tooltip = this.$(".ui-tooltip-top");
-      var val = this.input.val();
-      tooltip.fadeOut();
-      if (this.tooltipTimeout) {
-        clearTimeout(this.tooltipTimeout);
-      }
-      if ((val === '') || (val === this.input.attr('placeholder'))) {
-        return;
-      }
-      var show = function(){ tooltip.show().fadeIn(); };
-      this.tooltipTimeout = _.delay(show, 1000);
     }
-
   });
 
   // Finally, we kick things off by creating the **App**.
