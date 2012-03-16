@@ -3,11 +3,11 @@
 
   <head>
     <title>Hubbub</title>
-    <link href="/stylesheets/scaffold.css" media="all" rel="stylesheet" type="text/css"/>
     <script src="/javascripts/json2.js"></script>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/underscore-min.js"></script>
     <script src="/javascripts/backbone-min.js"></script>
+    <script src="/javascripts/backbone-localstorage.js"></script>
     <script src="/javascripts/item.js"></script>
     <link rel="stylesheet" href="/stylesheets/item.css" type="text/css" media="screen" charset="utf-8">
   </head>
@@ -16,7 +16,7 @@
 
     <!-- Todo App Interface -->
 
-    <div id="itemapp">
+    <div id="hubbub_app">
 
       <div class="title">
         <h1>Items</h1>
@@ -26,29 +26,21 @@
 
         <div id="create-item">
           <input id="new-item" placeholder="What needs to be done?" type="text" />
-          <span class="ui-tooltip-top" style="display:none;">Press Enter to save this task</span>
         </div>
 
         <div id="items">
           <ul id="item-list"></ul>
         </div>
 
-        <div id="item-stats"></div>
-
       </div>
 
     </div>
-
-    <ul id="instructions">
-      <li>Double-click to edit a todo.</li>
-    </ul>
 
     <!-- Templates -->
 
     <script type="text/template" id="item-template">
       <div class="item">
         <div class="display">
-          <input class="check" type="checkbox" />
           <div class="item-text"></div>
           <span class="item-destroy">x</span>
         </div>

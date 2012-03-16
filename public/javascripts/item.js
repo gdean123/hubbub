@@ -25,6 +25,7 @@ $(function(){
   window.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: Item,
+    localStorage: new Store("items"),
     url :'/items'
 
   });
@@ -46,7 +47,6 @@ $(function(){
 
     // The DOM events specific to an item.
     events: {
-      // "click .check"              : "toggleDone",
       "dblclick div.item-text"    : "edit",
       "click span.item-destroy"   : "clear",
       "keypress .item-input"      : "updateOnEnter"
@@ -113,7 +113,7 @@ $(function(){
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#itemapp"),
+    el: $("#hubbub_app"),
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
@@ -121,7 +121,7 @@ $(function(){
       "click .item-clear a": "clearCompleted"
     },
 
-    // At initialization we bind to the relevant events on the `Todos`
+    // At initialization we bind to the relevant events on the `Items`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
