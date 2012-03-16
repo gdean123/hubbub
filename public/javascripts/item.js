@@ -11,10 +11,10 @@ $(function(){
 
   // Our basic **Item** model has `description`, and `details` attributes.
   window.Item = Backbone.Model.extend({
-
+    
     // Default attributes for an item.
-    defaults: function() {
-    }
+    // defaults: function() {
+    // }
 
   });
 
@@ -25,7 +25,8 @@ $(function(){
   window.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: Item,
-    localStorage: new Store("items"),
+    // localStorage: new Store("items"),
+    
     url :'/items'
 
   });
@@ -68,7 +69,7 @@ $(function(){
     // To avoid XSS (not that it would be harmful in this particular app),
     // we use `jQuery.text` to set the contents of the todo item.
     setText: function() {
-      var text = this.model.get('text');
+      var text = this.model.get("description");
       this.$('.item-text').text(text);
       this.input = this.$('.item-input');
       this.input.bind('blur', _.bind(this.close, this)).val(text);
@@ -80,9 +81,10 @@ $(function(){
       this.input.focus();
     },
 
-    // Close the `"editing"` mode, saving changes to the todo.
+    // Close the `"editing"` mode, saving changes to the item.
     close: function() {
-      this.model.save({text: this.input.val()});
+      this.model.set({description: this.input.val()});
+      this.model.save();
       $(this.el).removeClass("editing");
     },
 
@@ -117,8 +119,7 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "keypress #new-item":  "createOnEnter",
-      "click .item-clear a": "clearCompleted"
+      "keypress #new-item":  "createOnEnter"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -152,19 +153,14 @@ $(function(){
     },
 
     // If you hit return in the main input field, and there is text to save,
-    // create new **Item** model persisting it to *localStorage*.
+    // create new **Item** model persisting it to database.
     createOnEnter: function(e) {
       var text = this.input.val();
       if (!text || e.keyCode != 13) { return; }
-      Items.create({text: text});
+      Items.create({description: text});
       this.input.val('');
-    },
-
-    // Clear all done todo items, destroying their models.
-    clearCompleted: function() {
-      _.each(Items.done(), function(item){ item.destroy(); });
-      return false;
     }
+
   });
 
   // Finally, we kick things off by creating the **App**.

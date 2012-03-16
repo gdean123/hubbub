@@ -40,12 +40,12 @@ describe ItemsController do
    describe "with valid params" do
      it "creates a new Item" do
        expect {
-         post :create, {:item => valid_attributes}, valid_session
+         post :create, valid_attributes, valid_session
        }.to change(Item, :count).by(1)
      end
   
      it "returns JSON string containing the item" do
-       post :create, {:item => valid_attributes}, valid_session
+       post :create, valid_attributes, valid_session
        json = JSON(response.body)
        json["description"].to_s.should eq "a description"       
      end
@@ -55,7 +55,7 @@ describe ItemsController do
      it "returns a json string with a nil description" do
        # Trigger the behavior that occurs when invalid params are submitted
        Item.any_instance.stub(:save).and_return(false)
-       post :create, {:item => {}}, valid_session
+       post :create, {}, valid_session
        json = JSON(response.body)
        json["description"].should be_nil
      end
@@ -71,7 +71,7 @@ describe ItemsController do
        # receives the :update_attributes message with whatever params are
        # submitted in the request.
        # Item.any_instance.should_receive(:update_attributes).with({'description' => 'testing'}) 
-       put :update, {:id => item.to_param, :item => {'description' => 'testing'}}, valid_session 
+       put :update, {:id => item.to_param, :description => 'testing'}, valid_session 
        json = JSON(response.body)
        json["description"].to_s.should eq "testing"       
      end  
@@ -82,7 +82,7 @@ describe ItemsController do
        # Trigger the behavior that occurs when invalid params are submitted
        item = Item.create! {}
        Item.any_instance.stub(:save).and_return(false)
-       put :update, {:id => item.to_param, :item => {}}, valid_session
+       put :update, {:id => item.to_param}, valid_session
        json = JSON(response.body)
        json["description"].should be_nil
      end

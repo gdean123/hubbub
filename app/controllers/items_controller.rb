@@ -47,7 +47,7 @@ class ItemsController < ApplicationController
   # POST /items
   # POST /items.xml
   def create
-    item = Item.create! params[:item]
+    item = Item.create! params
     
     render :json => item
     
@@ -70,7 +70,7 @@ class ItemsController < ApplicationController
   def update
     item = Item.find(params[:id])
 
-    item.update_attributes! params[:item]
+    item.update_attributes! params
     
     render :json => item
     
