@@ -22,14 +22,19 @@
       </div>
 
       <div class="content">
+        <form action="#" method="get" id="new_item" accept-charset="utf-8">
+          <div id="create-item">
+            <input id="description" placeholder="What needs to be done?" type="text" />
+            <input id="details" placeholder="What needs to be done? in more detail" type="text" />
+          </div>
 
-        <div id="create-item">
-          <input id="new-item" placeholder="What needs to be done?" type="text" />
-        </div>
-
-        <div id="items">
-          <ul id="item-list"></ul>
-        </div>
+          <div id="items">
+            <ul id="item-list"></ul>
+          </div>
+          <div id="submit_btn">
+            <input type="submit" name="submit" value="Submit" id="submit">
+          </div>
+        </form>
 
       </div>
 
@@ -40,11 +45,13 @@
     <script type="text/template" id="item-template">
       <div class="item">
         <div class="display">
-          <div class="item-text"></div>
+          <div class="description-text"></div>
+          <div class="details-text"></div>
           <span class="item-destroy">x</span>
         </div>
         <div class="edit">
-          <input class="item-input" type="text" value="" />
+          <input class="description-input" type="text" value="" />
+          <input class="details-input" type="text" value="" />
         </div>
       </div>
     </script>

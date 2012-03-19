@@ -48,9 +48,12 @@ $(function(){
 
     // The DOM events specific to an item.
     events: {
-      "dblclick div.item-text"    : "edit",
-      "click span.item-destroy"   : "clear",
-      "keypress .item-input"      : "updateOnEnter"
+      "dblclick div.description-text" : "edit",
+      "dblclick div.details-text"     : "edit",
+      "click span.item-destroy"       : "clear",
+      "keypress .description-input"   : "updateOnEnter",
+      "keypress .details-input"       : "updateOnEnter",
+      "submit #submit"                : "updateAllOnEnter"
     },
 
     // The ItemView listens for changes to its model, re-rendering.
@@ -61,6 +64,7 @@ $(function(){
 
     // Re-render the contents of the todo item.
     render: function() {
+      console.log(this.el);
       $(this.el).html(this.template(this.model.toJSON()));
       this.setText();
       return this;
@@ -69,27 +73,39 @@ $(function(){
     // To avoid XSS (not that it would be harmful in this particular app),
     // we use `jQuery.text` to set the contents of the todo item.
     setText: function() {
-      var text = this.model.get("description");
-      this.$('.item-text').text(text);
-      this.input = this.$('.item-input');
-      this.input.bind('blur', _.bind(this.close, this)).val(text);
+      var description = this.model.get("description");
+      var details = this.model.get("details");
+      this.$('.description-text').text(description);
+      this.$('.details-text').text(details);
+      this.description = this.$('.description-input');
+      this.details = this.$('.details-input');
+      this.description.bind('blur', _.bind(this.close, this)).val(description);
+      this.details.bind('blur', _.bind(this.close, this)).val(details);
     },
 
     // Switch this view into `"editing"` mode, displaying the input field.
     edit: function() {
       $(this.el).addClass("editing");
-      this.input.focus();
+      // this.description.focus();
     },
 
     // Close the `"editing"` mode, saving changes to the item.
     close: function() {
-      this.model.set({description: this.input.val()});
+      this.model.set({description: this.description.val(), details: this.details.val()});
       this.model.save();
       $(this.el).removeClass("editing");
     },
 
     // If you hit `enter`, we're through editing the item.
     updateOnEnter: function(e) {
+      if (e.keyCode == 13) {
+        this.close();
+      }
+    },
+    
+    // If you hit `submit`, we're through editing the item.
+    updateAllOnEnter: function(e) {
+      console.log(e);
       if (e.keyCode == 13) {
         this.close();
       }
@@ -119,14 +135,17 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "keypress #new-item":  "createOnEnter"
+      "keypress #description"  :  "createOnEnter",
+      "keypress #details"      :  "createOnEnter",
+      "submit #new_item"       :  "onSubmit"
     },
 
     // At initialization we bind to the relevant events on the `Items`
     // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved in *localStorage*.
+    // loading any preexisting todos that might be saved in *postgresql*.
     initialize: function() {
-      this.input    = this.$("#new-item");
+      this.description    = this.$("#description");
+      this.details        = this.$("#details");
 
       Items.bind('add',   this.addOne, this);
       Items.bind('reset', this.addAll, this);
@@ -155,10 +174,16 @@ $(function(){
     // If you hit return in the main input field, and there is text to save,
     // create new **Item** model persisting it to database.
     createOnEnter: function(e) {
-      var text = this.input.val();
-      if (!text || e.keyCode != 13) { return; }
-      Items.create({description: text});
-      this.input.val('');
+      var description = this.description.val();
+      var details     = this.details.val();
+      if (!description || e.keyCode != 13) { return; }
+      Items.create({description: description, details: details});
+      this.description.val('');
+      this.details.val('');
+    },
+    
+    // handle submitting the form 
+    onSubmit: function(e) {      
     }
 
   });
