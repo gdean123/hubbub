@@ -123,6 +123,20 @@ $(function(){
 
   });
 
+  // Dialog to create a new item
+  window.AddItemView = Backbone.View.extend({
+
+    el: $("#dialog"),
+
+    events: {
+      'click .ok':  'create'
+    },
+
+    create: function() {
+      console.log("here");
+    }
+  });
+
   // The Application
   // ---------------
 
@@ -137,7 +151,8 @@ $(function(){
     events: {
       "keypress #description"  :  "createOnEnter",
       "keypress #details"      :  "createOnEnter",
-      "submit #new_item"       :  "onSubmit"
+      "dblclick div#hubbub_app":  "showAddItemDialog"
+      //"submit #new_item"       :  "onSubmit"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -157,6 +172,13 @@ $(function(){
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
+    },
+
+    // Add a single todo item to the list by creating a view for it, and
+    // appending its element to the `<ul>`.
+    showAddItemDialog: function() {
+      var view = new AddItemView();
+      $("#dialog").dialog("open");
     },
 
     // Add a single todo item to the list by creating a view for it, and
