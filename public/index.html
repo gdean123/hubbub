@@ -25,20 +25,15 @@
       </div>
 
       <div class="content">
-        <form action="#" method="get" id="new_item" accept-charset="utf-8">
-          <div id="create-item">
-            <input id="description" placeholder="What needs to be done?" type="text" />
-            <input id="details" placeholder="What needs to be done? in more detail" type="text" />
-          </div>
-
-          <div id="items">
+        <div>
+            <button class="add_item_btn">Add New Item</button>
+        </div>
+        <div id="items">
             <ul id="item-list"></ul>
           </div>
-          <div id="submit_btn">
-            <input type="submit" name="submit" value="Submit" id="submit">
-          </div>
-        </form>
-
+        <div>
+            <button class="add_item_btn">Add New Item</button>
+        </div>
       </div>
 
     </div>
@@ -46,7 +41,12 @@
     <!-- Dialogs -->
 
     <div id="dialog" title="Test dialog">
-      <p>Test!</p>
+      <form action="#" method="get" id="new_item" accept-charset="utf-8">
+          <div id="create-item">
+            <input id="description" placeholder="What needs to be done?" type="text" />
+            <input id="details" placeholder="What needs to be done? in more detail" type="text" />
+          </div>
+      </form>
     </div>
 
     <!-- Templates -->

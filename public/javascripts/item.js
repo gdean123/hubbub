@@ -48,12 +48,12 @@ $(function(){
 
     // The DOM events specific to an item.
     events: {
-      "dblclick div.description-text" : "edit",
-      "dblclick div.details-text"     : "edit",
-      "click span.item-destroy"       : "clear",
-      "keypress .description-input"   : "updateOnEnter",
-      "keypress .details-input"       : "updateOnEnter",
-      "submit #submit"                : "updateAllOnEnter"
+      //"dblclick div.description-text" : "edit",
+      //"dblclick div.details-text"     : "edit",
+      "click span.item-destroy"       : "clear"
+      //"keypress .description-input"   : "updateOnEnter",
+      //"keypress .details-input"       : "updateOnEnter",
+      //"submit #submit"                : "updateAllOnEnter"
     },
 
     // The ItemView listens for changes to its model, re-rendering.
@@ -64,7 +64,6 @@ $(function(){
 
     // Re-render the contents of the todo item.
     render: function() {
-      console.log(this.el);
       $(this.el).html(this.template(this.model.toJSON()));
       this.setText();
       return this;
@@ -79,37 +78,37 @@ $(function(){
       this.$('.details-text').text(details);
       this.description = this.$('.description-input');
       this.details = this.$('.details-input');
-      this.description.bind('blur', _.bind(this.close, this)).val(description);
-      this.details.bind('blur', _.bind(this.close, this)).val(details);
+//      this.description.bind('blur', _.bind(this.close, this)).val(description);
+//      this.details.bind('blur', _.bind(this.close, this)).val(details);
     },
 
     // Switch this view into `"editing"` mode, displaying the input field.
-    edit: function() {
-      $(this.el).addClass("editing");
-      // this.description.focus();
-    },
+//    edit: function() {
+//      $(this.el).addClass("editing");
+//      // this.description.focus();
+//    },
 
     // Close the `"editing"` mode, saving changes to the item.
-    close: function() {
-      this.model.set({description: this.description.val(), details: this.details.val()});
-      this.model.save();
-      $(this.el).removeClass("editing");
-    },
+//    close: function() {
+//      this.model.set({description: this.description.val(), details: this.details.val()});
+//      this.model.save();
+//      $(this.el).removeClass("editing");
+//    },
 
     // If you hit `enter`, we're through editing the item.
-    updateOnEnter: function(e) {
-      if (e.keyCode == 13) {
-        this.close();
-      }
-    },
-    
+//    updateOnEnter: function(e) {
+//      if (e.keyCode == 13) {
+//        this.close();
+//      }
+//    },
+//
     // If you hit `submit`, we're through editing the item.
-    updateAllOnEnter: function(e) {
-      console.log(e);
-      if (e.keyCode == 13) {
-        this.close();
-      }
-    },
+//    updateAllOnEnter: function(e) {
+//      console.log(e);
+//      if (e.keyCode == 13) {
+//        this.close();
+//      }
+//    },
 
     // Remove this view from the DOM.
     remove: function() {
@@ -129,11 +128,42 @@ $(function(){
     el: $("#dialog"),
 
     events: {
-      'click .ok':  'create'
+      "click .ok":  "create"
+    },
+
+//    initialize: function() {
+//      Items.bind('add',   this.addOne, this);
+//      Items.bind('reset', this.addAll, this);
+//      Items.bind('all',   this.render, this);
+//      Items.fetch();
+//    },
+
+    // Add a single todo item to the list by creating a view for it, and
+    // appending its element to the `<ul>`.
+    addOne: function(item) {
+      var view = new ItemView({model: item});
+      $("#item-list").append(view.render().el);
+    },
+
+    // Add all items in the **Todos** collection at once.
+    addAll: function() {
+      Items.each(this.addOne);
+    },
+
+    close: function() {
+        this.model.set({description: this.description.val(), details: this.details.val()});
+        this.model.save();
+        //$(this.el).removeClass("editing");
+    },
+
+    // Re-rendering the App just means refreshing the statistics -- the rest
+    // of the app doesn't change.
+    render: function() {
     },
 
     create: function() {
-      console.log("here");
+      console.log("hereIam");
+      this.close();
     }
   });
 
@@ -149,10 +179,10 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "keypress #description"  :  "createOnEnter",
-      "keypress #details"      :  "createOnEnter",
-      "dblclick div#hubbub_app":  "showAddItemDialog"
-      //"submit #new_item"       :  "onSubmit"
+//      "keypress #description"  :  "createOnEnter",
+//      "keypress #details"      :  "createOnEnter",
+      "click .add_item_btn":  "showAddItemDialog",
+//      "submit #new_item"       :  "onSubmit"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -162,8 +192,8 @@ $(function(){
       this.description    = this.$("#description");
       this.details        = this.$("#details");
 
-      Items.bind('add',   this.addOne, this);
-      Items.bind('reset', this.addAll, this);
+//      Items.bind('add',   this.addOne, this);
+//      Items.bind('reset', this.addAll, this);
       Items.bind('all',   this.render, this);
 
       Items.fetch();
@@ -202,11 +232,11 @@ $(function(){
       Items.create({description: description, details: details});
       this.description.val('');
       this.details.val('');
-    },
+    }
     
     // handle submitting the form 
-    onSubmit: function(e) {      
-    }
+//    onSubmit: function(e) {
+//    }
 
   });
 

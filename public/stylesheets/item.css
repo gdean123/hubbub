@@ -56,7 +56,6 @@ body {
   padding: 20px 0 30px 0;
   line-height: 1;
 }
-
 #create-item {
   position: relative;
 }
@@ -109,7 +108,7 @@ body {
 }
 #item-list .editing .display,
 #item-list .edit {
-  display: none;
+/*  display: none; */
 }
 #item-list .editing .edit {
   display: block;
