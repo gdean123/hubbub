@@ -181,7 +181,7 @@ $(function(){
     events: {
 //      "keypress #description"  :  "createOnEnter",
 //      "keypress #details"      :  "createOnEnter",
-      "click .add_item_btn":  "showAddItemDialog",
+      "click .add_item_btn":  "showAddItemDialog"
 //      "submit #new_item"       :  "onSubmit"
     },
 
