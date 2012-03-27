@@ -4,7 +4,7 @@ var createAddItemDialog = function() {
     modal: true,
     buttons: [
       { text: "OK",
-        class: "ok",
+        class: "create",
         click: function() { $(this).dialog("close"); } },
       { text: "Cancel",
         click: function() { $(this).dialog("close"); } }

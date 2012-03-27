@@ -6,9 +6,9 @@
 // Load the application once the DOM is ready, using `jQuery.ready`:
 $(function(){
 
-  // Todo Model
-  // ----------
-
+  /* ******************************************
+  *  Item Model
+  * ******************************************/
   // Our basic **Item** model has `description`, and `details` attributes.
   window.Item = Backbone.Model.extend({
     
@@ -18,9 +18,10 @@ $(function(){
 
   });
 
-  // Item Collection
-  // ---------------
 
+  /* ******************************************
+  *  Item Collection
+  * ******************************************/
   // The collection of Items is backed by postrgresql.
   window.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
@@ -31,12 +32,18 @@ $(function(){
 
   });
 
+
+
+
   // Create our global collection of **Items**.
   window.Items = new ItemList();
 
-  // Items View
-  // --------------
 
+
+
+  /* ******************************************
+  *  Items View
+  * ******************************************/
   // The DOM element for an item...
   window.ItemView = Backbone.View.extend({
 
@@ -76,39 +83,7 @@ $(function(){
       var details = this.model.get("details");
       this.$('.description-text').text(description);
       this.$('.details-text').text(details);
-      this.description = this.$('.description-input');
-      this.details = this.$('.details-input');
-//      this.description.bind('blur', _.bind(this.close, this)).val(description);
-//      this.details.bind('blur', _.bind(this.close, this)).val(details);
     },
-
-    // Switch this view into `"editing"` mode, displaying the input field.
-//    edit: function() {
-//      $(this.el).addClass("editing");
-//      // this.description.focus();
-//    },
-
-    // Close the `"editing"` mode, saving changes to the item.
-//    close: function() {
-//      this.model.set({description: this.description.val(), details: this.details.val()});
-//      this.model.save();
-//      $(this.el).removeClass("editing");
-//    },
-
-    // If you hit `enter`, we're through editing the item.
-//    updateOnEnter: function(e) {
-//      if (e.keyCode == 13) {
-//        this.close();
-//      }
-//    },
-//
-    // If you hit `submit`, we're through editing the item.
-//    updateAllOnEnter: function(e) {
-//      console.log(e);
-//      if (e.keyCode == 13) {
-//        this.close();
-//      }
-//    },
 
     // Remove this view from the DOM.
     remove: function() {
@@ -121,55 +96,38 @@ $(function(){
     }
 
   });
-
-  // Dialog to create a new item
+  
+  
+  
+  /* ******************************************
+  *  Dialog to create a new item
+  * ******************************************/
   window.AddItemView = Backbone.View.extend({
 
-    el: $("#dialog"),
+    el: $("#dialog").parent(),
 
     events: {
-      "click .ok":  "create"
+      "click .create":  "create",
+      "click .cancel":  "cancel"
+    },
+    
+    // Do nothing, and jquery will close the dialog box
+    cancel: function() {
     },
 
-//    initialize: function() {
-//      Items.bind('add',   this.addOne, this);
-//      Items.bind('reset', this.addAll, this);
-//      Items.bind('all',   this.render, this);
-//      Items.fetch();
-//    },
-
-    // Add a single todo item to the list by creating a view for it, and
-    // appending its element to the `<ul>`.
-    addOne: function(item) {
-      var view = new ItemView({model: item});
-      $("#item-list").append(view.render().el);
-    },
-
-    // Add all items in the **Todos** collection at once.
-    addAll: function() {
-      Items.each(this.addOne);
-    },
-
-    close: function() {
-        this.model.set({description: this.description.val(), details: this.details.val()});
-        this.model.save();
-        //$(this.el).removeClass("editing");
-    },
-
-    // Re-rendering the App just means refreshing the statistics -- the rest
-    // of the app doesn't change.
-    render: function() {
-    },
-
-    create: function() {
-      console.log("hereIam");
-      this.close();
+    // Save the new item and jquery will close the dialog box
+    create: function() {      
+      this.model.set({description: $("#description").val(), details: $("#details").val()});
+      Items.add(this.model);
+      this.model.save();
     }
   });
 
-  // The Application
-  // ---------------
 
+
+  /* ******************************************
+  *  The Application
+  * ******************************************/
   // Our overall **AppView** is the top-level piece of UI.
   window.AppView = Backbone.View.extend({
 
@@ -179,10 +137,7 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-//      "keypress #description"  :  "createOnEnter",
-//      "keypress #details"      :  "createOnEnter",
       "click .add_item_btn":  "showAddItemDialog"
-//      "submit #new_item"       :  "onSubmit"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -192,10 +147,11 @@ $(function(){
       this.description    = this.$("#description");
       this.details        = this.$("#details");
 
-//      Items.bind('add',   this.addOne, this);
-//      Items.bind('reset', this.addAll, this);
+      Items.bind('add',   this.addOne, this);
+      Items.bind('reset', this.addAll, this);
       Items.bind('all',   this.render, this);
 
+      // fetch() calls the "reset" on the Items collection
       Items.fetch();
     },
 
@@ -207,7 +163,7 @@ $(function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     showAddItemDialog: function() {
-      var view = new AddItemView();
+      var view = new AddItemView({model: new Item()});
       $("#dialog").dialog("open");
     },
 
