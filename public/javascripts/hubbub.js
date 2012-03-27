@@ -7,9 +7,10 @@ var createAddItemDialog = function() {
     buttons: [
       { text: "OK",
         class: "create",
-        click: function() { $(this).dialog("close"); } },
+        click: function() {  }},
       { text: "Cancel",
-        click: function() { $(this).dialog("close"); } }
+        class: "cancel",
+        click: function() {  }}
     ]
   });
 }

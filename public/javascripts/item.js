@@ -11,7 +11,15 @@ $(function(){
   * ******************************************/
   // Our basic **Item** model has `description`, and `details` attributes.
   window.Item = Backbone.Model.extend({
-    
+
+  validate: function(attrs) {
+    console.log("validate")
+    if (!attrs.description) {
+      console.log("validationfailure")
+      return "Enter description";
+    }
+  }
+
     // Default attributes for an item.
     // defaults: function() {
     // }
@@ -113,16 +121,26 @@ $(function(){
     
     // Do nothing, and jquery will close the dialog box
     cancel: function() {
+    $("#dialog").dialog("close");
     },
 
     // Save the new item and jquery will close the dialog box
     create: function() {      
-      this.model.set({description: $("#description").val(), details: $("#details").val()});
-      Items.add(this.model);
-      this.model.save();
+      this.model.set(
+          {description: $("#description").val(), details: $("#details").val()},
+          {error: function(model, error)  {
+            alert(error);
+          }});
+      if(this.model.isValid()) {
+        Items.add(this.model);
+        this.model.save();
+        console.log("validitem")
+        $("#dialog").dialog("close");
+      }
     }
   });
-
+//click: function() { $(this).dialog("close"); } }
+//click: function() { $(this).dialog("close"); } }
 
 
   /* ******************************************
