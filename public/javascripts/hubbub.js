@@ -16,13 +16,13 @@ var createAddItemDialog = function() {
 
   $('#description').qtip({
     content: 'Enter description',
-    ready: false
-    //corner: {
+    ready: false,
+    // corner: {
     //    target: bottomLeft,
     //    tooltip: topLeft
-    //},
-    // show: null,
-    // hide: null
+    // },
+    show: { solo: true },
+    hide: { delay: 1000 }
   })
 }
 

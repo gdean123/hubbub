@@ -8,12 +8,13 @@ $(function(){
 
   /* ******************************************
   *  Item Model
+  *
+  *  Our basic **Item** model has `description`, and `details` attributes.
   * ******************************************/
-  // Our basic **Item** model has `description`, and `details` attributes.
   window.Item = Backbone.Model.extend({
 
   validate: function(attrs) {
-    if (!attrs.description) {
+    if (!attrs.description || $.trim(attrs.description) === "") {
       return "Enter description";
     }
   }
@@ -27,8 +28,9 @@ $(function(){
 
   /* ******************************************
   *  Item Collection
+  *
+  *  The collection of Items is backed by postrgresql.
   * ******************************************/
-  // The collection of Items is backed by postrgresql.
   window.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: Item,
@@ -49,8 +51,9 @@ $(function(){
 
   /* ******************************************
   *  Items View
+  *
+  *  The DOM element for an item...
   * ******************************************/
-  // The DOM element for an item...
   window.ItemView = Backbone.View.extend({
 
     //... is a list tag.
@@ -111,13 +114,19 @@ $(function(){
     el: $("#dialog").parent(),
 
     events: {
+      "keypress #description": "checkText",
       "click .create":  "create",
       "click .cancel":  "cancel"
     },
     
+    // check to see if there is anything in the text field
+    checkText: function() {
+      $('#description').qtip("hide");
+    },
+    
     // Do nothing, and jquery will close the dialog box
     cancel: function() {
-    $("#dialog").dialog("close");
+      $("#dialog").dialog("close");
     },
 
     // Save the new item and jquery will close the dialog box
@@ -130,16 +139,17 @@ $(function(){
       if(this.model.isValid()) {
         Items.add(this.model);
         this.model.save();
-          $('#description').qtip("hide");
-          $("#dialog").dialog("close");
+        $('#description').qtip("hide");
+        $("#dialog").dialog("close");
       }
     }
   });
 
   /* ******************************************
   *  The Application
+  * 
+  *  Our overall **AppView** is the top-level piece of UI.
   * ******************************************/
-  // Our overall **AppView** is the top-level piece of UI.
   window.AppView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
