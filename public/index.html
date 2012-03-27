@@ -6,6 +6,7 @@
     <script src="/javascripts/json2.js"></script>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/jquery-ui.js"></script>
+    <script src="/javascripts/jquery.qtip.js"></script>
     <script src="/javascripts/underscore-min.js"></script>
     <script src="/javascripts/backbone-min.js"></script>
     <script src="/javascripts/item.js"></script>
@@ -26,13 +27,10 @@
 
       <div class="content">
         <div>
-            <button class="add_item_btn">Add New Item</button>
+            <button id="add_item_btn">Add New Item</button>
         </div>
         <div id="items">
             <ul id="item-list"></ul>
-        </div>
-        <div>
-            <button class="add_item_btn">Add New Item</button>
         </div>
       </div>
 
@@ -43,7 +41,7 @@
     <div id="dialog" title="Add Item">
       <form action="#" method="get" id="new_item" accept-charset="utf-8">
           <div id="create-item">
-            <input id="description" placeholder="What needs to be done?" type="text" required />
+            <input id="description" placeholder="What needs to be done?" type="text"/>
             <input id="details" placeholder="Add more details" type="text" />
             <!-- <input type="submit" name="submit" value="submit" id="submit"> -->
           </div>
@@ -55,8 +53,8 @@
     <script type="text/template" id="item-template">
       <div class="item">
         <div class="display">
-          <div class="description-text"></div>
-          <div class="details-text"></div>
+          <div id="description-text"></div>
+          <div id="details-text"></div>
           <span class="item-destroy">x</span>
         </div>
       </div>

@@ -13,6 +13,17 @@ var createAddItemDialog = function() {
         click: function() {  }}
     ]
   });
+
+  $('#description').qtip({
+    content: 'Enter description',
+    ready: false,
+    //corner: {
+    //    target: bottomLeft,
+    //    tooltip: topLeft
+    //},
+    show: null,
+    hide: null
+  })
 }
 
 $(document).ready(function() {

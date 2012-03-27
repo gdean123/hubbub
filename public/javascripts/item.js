@@ -13,9 +13,7 @@ $(function(){
   window.Item = Backbone.Model.extend({
 
   validate: function(attrs) {
-    console.log("validate")
     if (!attrs.description) {
-      console.log("validationfailure")
       return "Enter description";
     }
   }
@@ -63,8 +61,6 @@ $(function(){
 
     // The DOM events specific to an item.
     events: {
-      //"dblclick div.description-text" : "edit",
-      //"dblclick div.details-text"     : "edit",
       "click span.item-destroy"       : "clear"
       //"keypress .description-input"   : "updateOnEnter",
       //"keypress .details-input"       : "updateOnEnter",
@@ -89,8 +85,8 @@ $(function(){
     setText: function() {
       var description = this.model.get("description");
       var details = this.model.get("details");
-      this.$('.description-text').text(description);
-      this.$('.details-text').text(details);
+      this.$('#description-text').text(description);
+      this.$('#details-text').text(details);
     },
 
     // Remove this view from the DOM.
@@ -129,19 +125,16 @@ $(function(){
       this.model.set(
           {description: $("#description").val(), details: $("#details").val()},
           {error: function(model, error)  {
-            alert(error);
+            $('#description').qtip("show");
           }});
       if(this.model.isValid()) {
         Items.add(this.model);
         this.model.save();
-        console.log("validitem")
-        $("#dialog").dialog("close");
+          $('#description').qtip("hide");
+          $("#dialog").dialog("close");
       }
     }
   });
-//click: function() { $(this).dialog("close"); } }
-//click: function() { $(this).dialog("close"); } }
-
 
   /* ******************************************
   *  The Application
@@ -155,7 +148,7 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click .add_item_btn":  "showAddItemDialog"
+      "click #add_item_btn":  "showAddItemDialog"
     },
 
     // At initialization we bind to the relevant events on the `Items`
