@@ -119,6 +119,10 @@ $(function(){
       "click .cancel":  "cancel"
     },
     
+    // initialize: function() {
+    //   this.model = new Item();
+    // },
+    
     // check to see if there is anything in the text field
     checkText: function() {
       $('#description').qtip("hide");
@@ -130,7 +134,8 @@ $(function(){
     },
 
     // Save the new item and jquery will close the dialog box
-    create: function() {      
+    create: function() {
+      // this.model = new Item();   
       this.model.set(
           {description: $("#description").val(), details: $("#details").val()},
           {error: function(model, error)  {
