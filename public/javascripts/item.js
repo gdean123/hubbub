@@ -120,6 +120,15 @@ $(function(){
     },
     
     initialize: function() {
+/*      $("description").qtip({
+        content: 'Enter description',
+        position: {
+          corner: {
+            target: 'bottomLeft',
+            tooltip: 'bottomLeft'
+          }
+        }
+      });*/
       $("#dialog").dialog({ autoOpen: false });
     },
 
