@@ -10,12 +10,15 @@
 #   - lib/source2.js
 #   - dist/**/*.js
 #
-src_files:
-  - public/javascripts/prototype.js
-  - public/javascripts/effects.js
-  - public/javascripts/controls.js
-  - public/javascripts/dragdrop.js
-  - public/javascripts/application.js
+src_files:  
+  - public/javascripts/json2.js
+  - public/javascripts/jquery.min.js  
+  - public/javascripts/jquery-ui.js
+  - public/javascripts/jquery.qtip.js
+  - public/javascripts/underscore-min.js
+  - public/javascripts/backbone-min.js
+  - public/javascripts/item.js
+  - public/javascripts/hubbub.js
   - public/javascripts/**/*.js
 
 # stylesheets
