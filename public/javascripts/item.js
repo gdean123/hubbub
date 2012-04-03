@@ -119,15 +119,21 @@ $(function(){
       "click .cancel":  "cancel"
     },
     
-    // initialize: function() {
-    //   this.model = new Item();
-    // },
-    
+    initialize: function() {
+      $("#dialog").dialog({ autoOpen: false });
+    },
+
     // check to see if there is anything in the text field
     checkText: function() {
       $('#description').qtip("hide");
     },
-    
+
+    show: function() {
+      $("#description").val("");
+      $("#details").val("");
+      $("#dialog").dialog("open");
+    },
+
     // Do nothing, and jquery will close the dialog box
     cancel: function() {
       $("#dialog").dialog("close");
@@ -135,7 +141,7 @@ $(function(){
 
     // Save the new item and jquery will close the dialog box
     create: function() {
-      // this.model = new Item();   
+      this.model = new Item();
       this.model.set(
           {description: $("#description").val(), details: $("#details").val()},
           {error: function(model, error)  {
@@ -177,6 +183,8 @@ $(function(){
       Items.bind('reset', this.addAll, this);
       Items.bind('all',   this.render, this);
 
+      this.addItemView = new AddItemView();
+
       // fetch() calls the "reset" on the Items collection
       Items.fetch();
     },
@@ -189,8 +197,7 @@ $(function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     showAddItemDialog: function() {
-      var view = new AddItemView({model: new Item()});
-      $("#dialog").dialog("open");
+      this.addItemView.show();
     },
 
     // Add a single todo item to the list by creating a view for it, and
