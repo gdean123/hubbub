@@ -13,19 +13,21 @@ var createAddItemDialog = function() {
         click: function() {  }}
     ]
   });
+  
+  createToolTip("description", "Enter description");
+  createToolTip("details", "Enter details");
+}
 
-  $('#description').qtip({
-    content: 'Enter description',
+var createToolTip = function(id, contentText){
+  $("#"+id).qtip({
+    content: contentText,
     style: { 
           width: 200,
           padding: 5,
-          // background: '#A2D959',
-          // color: 'black',
           textAlign: 'center',
           border: {
              width: 7,
              radius: 5,
-             // color: '#A2D959'
           },
           tip: 'bottomLeft',
           name: 'dark' // Inherit the rest of the attributes from the preset dark style
@@ -38,8 +40,9 @@ var createAddItemDialog = function() {
     },    
     show: { solo: true },
     hide: { delay: 1000 }
-  })
+  });
 }
+
 
 $(document).ready(function() {
   createAddItemDialog();

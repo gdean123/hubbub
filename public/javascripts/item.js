@@ -115,6 +115,7 @@ $(function(){
 
     events: {
       "keypress #description": "checkText",
+      "keypress #details": "checkText",
       "click .create":  "create",
       "click .cancel":  "cancel"
     },
@@ -135,6 +136,7 @@ $(function(){
     // check to see if there is anything in the text field
     checkText: function() {
       $('#description').qtip("hide");
+      $('#details').qtip("hide");
     },
 
     show: function() {
