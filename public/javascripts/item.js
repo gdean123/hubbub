@@ -149,6 +149,7 @@ $(function(){
     cancel: function() {
       $("#dialog").dialog("close");
       $('#description').qtip("hide");
+      $('#details').qtip("hide");
     },
 
     // Save the new item and jquery will close the dialog box
