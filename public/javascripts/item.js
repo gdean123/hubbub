@@ -146,6 +146,7 @@ $(function(){
     // Do nothing, and jquery will close the dialog box
     cancel: function() {
       $("#dialog").dialog("close");
+      $('#description').qtip("hide");
     },
 
     // Save the new item and jquery will close the dialog box
