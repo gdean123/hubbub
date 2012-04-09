@@ -245,5 +245,5 @@ HubbubApp = $(function(){
 
   // Finally, we kick things off by creating the **App**.
   HubbubApp.App = new HubbubApp.AppView();
-  return HubbubApp.App
+  return HubbubApp.App;
 });
