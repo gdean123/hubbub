@@ -60,13 +60,7 @@ $(function(){
     tagName:  "li",
 
     // Cache the template function for a single item.
-    template: _.template("<div class='item'>" +
-      "<div class='display'>" +
-        "<div id='description-text'></div>" +
-        "<div id='details-text'></div>" +
-        "<span class='item-destroy'>x</span>" +
-      "</div>" +
-    "</div>"),
+    template: _.template($('#item-template').html()),
 
     // The DOM events specific to an item.
     events: {
@@ -121,45 +115,23 @@ $(function(){
 
     events: {
       "keypress #description": "checkText",
-      "keypress #details": "checkText"
+      "keypress #details": "checkText",
+      "click .create":  "create",
+      "click .cancel":  "cancel"
     },
     
     initialize: function() {
-      var tmp = this.template();
-      // $(tmp).appendTo('body');
-      $(tmp).dialog({
-        autoOpen: false,
-        modal: true,
-        width: 510,
-        height: 220,
-        buttons: [
-          { text: "OK",
-            class: "create",
-            click: function() { }
-          },
-          { text: "Cancel",
-            class: "cancel",
-            click: function() { }
+/*      $("description").qtip({
+        content: 'Enter description',
+        position: {
+          corner: {
+            target: 'bottomLeft',
+            tooltip: 'bottomLeft'
           }
-        ]
-      });
-      console.log($(".create"));
-      $(".create").on('click', function(){
-        // console.log("test");
-        // this.create();
-      });
-      // this.template().dialog({ autoOpen: false });
+        }
+      });*/
+      $("#dialog").dialog({ autoOpen: false });
     },
-    
-    // template for dialog box
-    template: _.template('<div id="dialog" title="Add Item" hidden="true">' +
-      '<form action="#" method="get" id="new_item" accept-charset="utf-8">' +
-          '<div id="create-item">' +
-            '<input id="description" placeholder="What needs to be done?" type="text"/>' +
-            '<input id="details" placeholder="Add more details" type="text" />' +
-          '</div>' +
-      '</form>' +
-    '</div>'),
 
     // check to see if there is anything in the text field
     checkText: function() {
