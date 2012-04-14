@@ -4,14 +4,15 @@
 // to persist Backbone models within your browser.
 
 // Load the application once the DOM is ready, using `jQuery.ready`:
-$(function(){
+HubbubApp = $(function(){
+  var HubbubApp = {};
 
   /* ******************************************
   *  Item Model
   *
   *  Our basic **Item** model has `description`, and `details` attributes.
   * ******************************************/
-  window.Item = Backbone.Model.extend({
+  HubbubApp.Item = Backbone.Model.extend({
 
   validate: function(attrs) {
     if (!attrs.description || $.trim(attrs.description) === "") {
@@ -31,9 +32,9 @@ $(function(){
   *
   *  The collection of Items is backed by postrgresql.
   * ******************************************/
-  window.ItemList = Backbone.Collection.extend({
+  HubbubApp.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
-    model: Item,
+    model: HubbubApp.Item,
     // localStorage: new Store("items"),
     
     url :'/items'
@@ -44,7 +45,7 @@ $(function(){
 
 
   // Create our global collection of **Items**.
-  window.Items = new ItemList();
+  HubbubApp.Items = new HubbubApp.ItemList();
 
 
 
@@ -54,7 +55,7 @@ $(function(){
   *
   *  The DOM element for an item...
   * ******************************************/
-  window.ItemView = Backbone.View.extend({
+  HubbubApp.ItemView = Backbone.View.extend({
 
     //... is a list tag.
     tagName:  "li",
@@ -109,7 +110,7 @@ $(function(){
   /* ******************************************
   *  Dialog to create a new item
   * ******************************************/
-  window.AddItemView = Backbone.View.extend({
+  HubbubApp.AddItemView = Backbone.View.extend({
 
     el: $("#dialog").parent(),
 
@@ -154,14 +155,14 @@ $(function(){
 
     // Save the new item and jquery will close the dialog box
     create: function() {
-      this.model = new Item();
+      this.model = new HubbubApp.Item();
       this.model.set(
           {description: $("#description").val(), details: $("#details").val()},
           {error: function(model, error)  {
             $('#description').qtip("show");
           }});
       if(this.model.isValid()) {
-        Items.add(this.model);
+        HubbubApp.Items.add(this.model);
         this.model.save();
         $('#description').qtip("hide");
         $("#dialog").dialog("close");
@@ -174,7 +175,7 @@ $(function(){
   * 
   *  Our overall **AppView** is the top-level piece of UI.
   * ******************************************/
-  window.AppView = Backbone.View.extend({
+  HubbubApp.AppView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
@@ -192,14 +193,14 @@ $(function(){
       this.description    = this.$("#description");
       this.details        = this.$("#details");
 
-      Items.bind('add',   this.addOne, this);
-      Items.bind('reset', this.addAll, this);
-      Items.bind('all',   this.render, this);
+      HubbubApp.Items.bind('add',   this.addOne, this);
+      HubbubApp.Items.bind('reset', this.addAll, this);
+      HubbubApp.Items.bind('all',   this.render, this);
 
-      this.addItemView = new AddItemView();
+      this.addItemView = new HubbubApp.AddItemView();
 
       // fetch() calls the "reset" on the Items collection
-      Items.fetch();
+      HubbubApp.Items.fetch();
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
@@ -216,13 +217,13 @@ $(function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     addOne: function(item) {
-      var view = new ItemView({model: item});
+      var view = new HubbubApp.ItemView({model: item});
       $("#item-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-      Items.each(this.addOne);
+      HubbubApp.Items.each(this.addOne);
     },
 
     // If you hit return in the main input field, and there is text to save,
@@ -231,7 +232,7 @@ $(function(){
       var description = this.description.val();
       var details     = this.details.val();
       if (!description || e.keyCode != 13) { return; }
-      Items.create({description: description, details: details});
+      HubbubApp.Items.create({description: description, details: details});
       this.description.val('');
       this.details.val('');
     }
@@ -243,6 +244,6 @@ $(function(){
   });
 
   // Finally, we kick things off by creating the **App**.
-  window.App = new AppView();
-
+  HubbubApp.App = new HubbubApp.AppView();
+  return HubbubApp.App;
 });
