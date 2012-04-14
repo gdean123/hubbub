@@ -17,9 +17,10 @@ src_files:
   - public/javascripts/jquery.qtip.js
   - public/javascripts/underscore-min.js
   - public/javascripts/backbone-min.js
+  - public/javascripts/jquery_ujs.js
   - public/javascripts/item.js
   - public/javascripts/hubbub.js
-  - public/javascripts/**/*.js
+  #- public/javascripts/**/*.js
 
 # stylesheets
 #

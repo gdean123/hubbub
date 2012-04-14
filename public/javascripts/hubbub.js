@@ -44,6 +44,10 @@ var createToolTip = function(id, contentText){
 }
 
 
+// Load the application once the DOM is ready, using `jQuery.ready`:
 $(document).ready(function() {
+  var hubbubApp = HubbubApp();
+  new hubbubApp.AppView();
+
   createAddItemDialog();
 });

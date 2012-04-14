@@ -1,15 +1,20 @@
 describe("ItemView", function() {
+  var hubbubApp, appView;
+
   beforeEach(function(){
-    var tmp = HubbubApp();
-    this.items = HubbubApp.Items;
-    this.items.add(new HubbubApp.Item({"description": "test"}));
+    loadFixtures("dialog-template.html", "item-template.html");
+
+    hubbubApp = HubbubApp();
+    appView = new hubbubApp.AppView();
+
+    hubbubApp.Items.add(new hubbubApp.Item({"description": "test"}));
   });
 
   describe("Instantiation", function() {
     
       it("should create a list element", function() {
-        expect(this.items.models[0].attributes.description).toEqual("test");
+        //TypeError: Cannot read property 'models' of undefined
+        expect(hubbubApp.Items.models[0].attributes.description).toEqual("test");
       });
-
- });
+  });
 });
