@@ -61,6 +61,16 @@
         </div>
       </div>
     </script>
+    
+    <script type="text/javascript" charset="utf-8">
+      // Load the application once the DOM is ready, using `jQuery.ready`:
+      $(document).ready(function() {
+        var hubbubApp = HubbubApp();
+        appView = new hubbubApp.AppView();
+
+        createAddItemDialog();
+      });
+    </script>
   </body>
 
 </html>
