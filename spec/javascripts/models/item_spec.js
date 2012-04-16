@@ -8,9 +8,7 @@ describe("item", function() {
   });
 
   it("should create a new item", function() {
-    expect(hubbubApp.Items.map(function(item){
-      return item.get("description");
-    }).toString()).toEqual("a todo item");
+    expect(hubbubApp.Items.first().get("description")).toEqual("a todo item");
   });
   
   describe("required", function() {

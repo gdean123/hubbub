@@ -68,8 +68,8 @@ HubbubApp = (function(){
     setText: function() {
       var description = this.model.get("description");
       var details = this.model.get("details");
-      this.$('#description-text').text(description);
-      this.$('#details-text').text(details);
+      this.$('.description-text').text(description);
+      this.$('.details-text').text(details);
     },
 
     // Remove this view from the DOM.
