@@ -1,29 +1,18 @@
 describe("item", function() {
-  var hubbubApp, appView;
+  var hubbubApp;
   beforeEach(function(){
     hubbubApp = HubbubApp();
-    // appView = new hubbubApp.AppView();
-    
-    hubbubApp.Items.add(new hubbubApp.Item({"description": "a todo item"}));    
+	this.item = new hubbubApp.Item({"description": "test"})
+	this.item.url = "/";
   });
 
-  it("should create a new item", function() {
-    expect(hubbubApp.Items.first().get("description")).toEqual("a todo item");
+  it("should create a new item with valid attributes", function() {
+    expect(this.item.get("description")).toEqual("test");
   });
   
-  describe("required", function() {
-
-      // it("should not accept a blank field in description", function() {
-      //   var eventSpy = sinon.spy();
-      //   this.item.bind("error", eventSpy);
-      //   this.item.save({"description": ""});
-      //   expect(this.eventSpy.calledOnce).toBeTruthy();
-      //   expect(this.eventSpy.calledWith(
-      //     this.item, 
-      //     "is required"
-      //   )).toBeTruthy();
-      // 
-      // });
+  it("should not allow the description field to be empty", function() {
+    this.item.set("description", "");
+	expect(this.item.get("description")).toEqual("test");
   });
-     
+
 });
