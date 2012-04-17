@@ -1,0 +1,54 @@
+<!-- Todo App Interface -->
+
+<div id="hubbub_app">
+
+  <div class="title">
+    <h1>Items</h1>
+  </div>
+
+  <div class="content">
+    <div>
+        <button id="add_item_btn">Add New Item</button>
+    </div>
+    <div id="items">
+        <ul id="item-list"></ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- THESE TEMPLATES NEED TO BE DELETED! -->
+
+<!-- Dialogs -->
+
+<div id="dialog" title="Add Item" hidden="true">
+  <form action="#" method="get" id="new_item" accept-charset="utf-8">
+      <div id="create-item">
+        <input id="description" placeholder="What needs to be done?" type="text"/>
+        <input id="details" placeholder="Add more details" type="text" />
+        <!-- <input type="submit" name="submit" value="submit" id="submit"> -->
+      </div>
+  </form>
+</div>
+
+<!-- Templates -->
+
+<script type="text/template" id="item-template">
+  <div class="item">
+    <div class="display">
+      <div class="description-text"></div>
+      <div class="details-text"></div>
+      <span class="item-destroy">x</span>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  // Load the application once the DOM is ready, using `jQuery.ready`:
+  $(document).ready(function() {
+    var hubbubApp = HubbubApp();
+    appView = new hubbubApp.AppView();
+
+    createAddItemDialog();
+  });
+</script>
