@@ -20,7 +20,8 @@ src_files:
   - public/javascripts/jquery_ujs.js
   - public/javascripts/item.js
   - public/javascripts/hubbub.js
-  #- public/javascripts/**/*.js
+  - spec/javascripts/vendor/jasmine-jquery.js
+  - spec/javascripts/vendor/sinon.js
 
 # stylesheets
 #

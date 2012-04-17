@@ -1,7 +1,7 @@
 describe("ItemView", function() {
   var hubbubApp, appView;
   beforeEach(function(){
-	  loadFixtures("item-template.html", "dialog-template.html");
+	loadFixtures("_item-template.html", "_dialog-template.html");
 
     hubbubApp = HubbubApp();
     this.item = new hubbubApp.Item({"description": "test"})
@@ -15,7 +15,7 @@ describe("ItemView", function() {
             expect(this.view.el.nodeName).toEqual("LI");
       });
       
-      it("should render a descripion", function() {  
+      it("should render a description", function() {
             expect(this.view.el.innerHTML).toContain("test");
       });
             
