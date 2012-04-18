@@ -10,7 +10,6 @@ describe("ItemView", function() {
   });
 
   describe("Instantiation", function() {
-    
       it("should create a list element", function() {        
             expect(this.view.el.nodeName).toEqual("LI");
       });
@@ -20,5 +19,20 @@ describe("ItemView", function() {
       });
             
   });
+  
+  // describe("onHover", function(){
+  //   it("Should display a hover menu on hover", function(){
+  //     this.view.$('.item').trigger('mouseover');
+  //     console.log(this.view.$('.item').trigger('mouseover'));
+  //     expect(this.view.$('.item_hover')).toBeVisible();
+  //   });
+  //   
+  //   it("Should hide the hover menu on mouseout", function(){
+  //     this.view.$('.item').trigger('mouseover');
+  //     this.view.$('.item').trigger('mouseout');
+  //     expect(this.view.$('.item_hover')).toBeHidden();
+  //   });
+  //   
+  // });
 });
 

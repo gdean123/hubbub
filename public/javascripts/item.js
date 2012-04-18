@@ -71,7 +71,7 @@ HubbubApp = (function(){
       this.$('.description-text').text(description);
       this.$('.details-text').text(details);
     },
-
+        
     // Remove this view from the DOM.
     remove: function() {
       $(this.el).remove();
@@ -150,7 +150,9 @@ HubbubApp = (function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #add_item_btn":  "showAddItemDialog"
+      "click #add_item_btn"             :  "showAddItemDialog",
+      "mouseover #item-list li .item"   : "showHover",
+      "mouseout #item-list li .item"    : "hideHover"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -180,6 +182,21 @@ HubbubApp = (function(){
     showAddItemDialog: function() {
       this.addItemView.show();
     },
+    
+    showHover: function (ev) {
+      var target = ev.currentTarget;
+      var self = this;
+      // console.log("in showHover");
+      $(target).next(".item_hover").show();
+    },
+    
+    hideHover: function (ev) {
+      var target = ev.currentTarget;
+      var self = this;
+      // console.log("in hideHover");
+      $(target).next(".item_hover").hide();
+    },
+    
 
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
