@@ -42,17 +42,3 @@ var createToolTip = function(id, contentText){
     hide: { delay: 1000 }
   });
 }
-
-function showHover() {
-  console.log("here");
-  $(this).next(".item_hover").show();
-}
-
-function hideHover() {
-  $(this).next(".item_hover").hide();
-}
-
-$(document).ready(function() {  
-  // $(".description-text").hoverIntent(showHover, hideHover);
-  // $("#item-list li").hover(function(){ console.log("testing")}, function(){ console.log("out")});
-});
