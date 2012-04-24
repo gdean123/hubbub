@@ -150,7 +150,7 @@ HubbubApp = (function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #add_item_btn"             :  "showAddItemDialog",
+      "click #add_item_btn"             : "showAddItemDialog",
       "mouseover #item-list li .item"   : "showHover",
       "mouseout #item-list li .item"    : "hideHover"
     },
@@ -165,7 +165,7 @@ HubbubApp = (function(){
       hubbubApp.Items.bind('add',   this.addOne, this);
       hubbubApp.Items.bind('reset', this.addAll, this);
       hubbubApp.Items.bind('all',   this.render, this);
-
+      
       this.addItemView = new hubbubApp.AddItemView();
 
       // fetch() calls the "reset" on the Items collection
