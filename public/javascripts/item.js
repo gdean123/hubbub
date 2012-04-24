@@ -60,31 +60,9 @@ HubbubApp = (function(){
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       this.setText();
-      this.createHoverMenu();
+      // this.createHoverMenu();
 	    return this;
 	  },
-
-    createHoverMenu: function() {
-      this.$('.item').qtip({
-  	    // Give it some content
-        content: '<img src="images/add_item.png"/>',
-        // Add padding to the image
-        style: {
-          padding: 0
-        },    		
-        // Set its position
-        position: {
-          corner: {
-            target: 'bottomLeft',
-            tooltip: 'topLeft'
-          }
-        },    		
-        hide: {
-            // Make it fixed so it can be hovered over
-    		    fixed: true
-  		  }
-		  });
-    },
     
     // To avoid XSS (not that it would be harmful in this particular app),
     // we use `jQuery.text` to set the contents of the todo item.
@@ -175,7 +153,8 @@ HubbubApp = (function(){
     events: {
       "click #add_item_btn"             : "showAddItemDialog",
       "mouseover #item-list li .item"   : "showHover",
-      "mouseout #item-list li .item"    : "hideHover"
+      "mouseout #item-list li .item"    : "hideHover",
+      "click #item-list li .item .add_child" : "showAddItemDialog"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -210,16 +189,16 @@ HubbubApp = (function(){
       var target = ev.currentTarget;
       var self = this;
       // console.log("in showHover");
-      $(target).next(".item_hover").show();
+      
+      $(target).children(".item_hover").show();
     },
     
     hideHover: function (ev) {
       var target = ev.currentTarget;
       var self = this;
-      // console.log("in hideHover");
-      $(target).next(".item_hover").hide();
+      // console.log();
+      $(target).children(".item_hover").hide(); 
     },
-    
 
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
