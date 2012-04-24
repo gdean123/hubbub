@@ -54,15 +54,38 @@ HubbubApp = (function(){
     initialize: function() {
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
-    },
+	},
 
     // Re-render the contents of the todo item.
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       this.setText();
-      return this;
-    },
+      this.createHoverMenu();
+	    return this;
+	  },
 
+    createHoverMenu: function() {
+      this.$('.item').qtip({
+  	    // Give it some content
+        content: '<img src="images/add_item.png"/>',
+        // Add padding to the image
+        style: {
+          padding: 0
+        },    		
+        // Set its position
+        position: {
+          corner: {
+            target: 'bottomLeft',
+            tooltip: 'topLeft'
+          }
+        },    		
+        hide: {
+            // Make it fixed so it can be hovered over
+    		    fixed: true
+  		  }
+		  });
+    },
+    
     // To avoid XSS (not that it would be harmful in this particular app),
     // we use `jQuery.text` to set the contents of the todo item.
     setText: function() {
