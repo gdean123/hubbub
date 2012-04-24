@@ -18,12 +18,6 @@ var createAddItemDialog = function() {
   createToolTip("details", "Enter details");
 }
 
-// var createHoverMenu = function() {
-//  $('.item').qtip({
-//    content: '<img src="images/add_item.png"/>'
-//  });
-// }
-
 var createToolTip = function(id, contentText){
   $("#"+id).qtip({
     content: contentText,
