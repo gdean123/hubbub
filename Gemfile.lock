@@ -29,6 +29,8 @@ GEM
       activesupport (= 3.0.12)
     activesupport (3.0.12)
     addressable (2.2.7)
+    ancestry (1.2.5)
+      activerecord (>= 2.2.2)
     ansi (1.4.2)
     archive-tar-minitar (0.5.2)
     arel (2.0.10)
@@ -175,6 +177,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  ancestry
   capybara
   cucumber-rails
   database_cleaner

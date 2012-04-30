@@ -4,6 +4,7 @@ gem 'rails', '3.0.12'
 gem 'pg'
 gem 'heroku'
 gem 'jquery-rails'
+gem 'ancestry'
 
 # Required on Windows
 gem "rake", "0.8.7"
@@ -33,7 +34,6 @@ group :development, :test do
   gem 'jasmine'
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'cucumber-rails'
   gem 'database_cleaner'
 
   gem 'jslint_on_rails'
@@ -44,4 +44,5 @@ end
 
 group :test do
   gem 'turn', '0.8.2', :require => false
+	gem 'cucumber-rails'
 end

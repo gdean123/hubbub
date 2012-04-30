@@ -40,7 +40,7 @@ HubbubApp = (function(){
     tagName:  "li",
 
     // Cache the template function for a single item.
-    template: _.template($('#item-template').text()),    
+    template: _.template($('#item-template').html()),    
 
     // The DOM events specific to an item.
     events: {
@@ -58,7 +58,10 @@ HubbubApp = (function(){
 
     // Re-render the contents of the todo item.
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      // $(this.el).html(this.template(this.model.toJSON()));
+      var tojson = this.model.toJSON();
+      // console.log(tojson);
+      $(this.el).html(this.template(tojson));
       this.setText();
       // this.createHoverMenu();
 	    return this;
