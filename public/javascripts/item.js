@@ -40,14 +40,11 @@ HubbubApp = (function(){
     tagName:  "li",
 
     // Cache the template function for a single item.
-    template: _.template($('#item-template').html()),    
+    template: _.template($('#item-template').text()),
 
     // The DOM events specific to an item.
     events: {
       "click span.item-destroy"       : "clear"
-      //"keypress .description-input"   : "updateOnEnter",
-      //"keypress .details-input"       : "updateOnEnter",
-      //"submit #submit"                : "updateAllOnEnter"
     },
 
     // The ItemView listens for changes to its model, re-rendering.
