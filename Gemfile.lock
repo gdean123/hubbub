@@ -141,12 +141,12 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.9.0)
-    ruby-debug-base19x (0.11.29)
+    ruby-debug-base19x (0.11.30.pre3)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       rake (>= 0.8.1)
       ruby_core_source (>= 0.1.4)
-    ruby-debug-ide (0.4.16)
+    ruby-debug-ide (0.4.17.beta8)
       rake (>= 0.8.1)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
@@ -191,8 +191,8 @@ DEPENDENCIES
   rails (= 3.0.12)
   rake (= 0.8.7)
   rspec-rails
-  ruby-debug-base19x
-  ruby-debug-ide
+  ruby-debug-base19x (= 0.11.30.pre3)
+  ruby-debug-ide (= 0.4.17.beta8)
   selenium-webdriver
   simplecov
   turn (= 0.8.2)

@@ -14,8 +14,8 @@ gem 'ffi', '1.0.9'
 # in production environments by default.
 
 group :development do
-  gem 'ruby-debug-base19x'
-	gem 'ruby-debug-ide'
+  gem 'ruby-debug-base19x', '0.11.30.pre3'
+	gem 'ruby-debug-ide', '0.4.17.beta8'
 
 	platforms :mswin, :mingw do
 		gem 'win32console'
