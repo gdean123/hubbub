@@ -55,6 +55,7 @@ HubbubApp = (function(){
 
     // Re-render the contents of the todo item.
     render: function() {
+
       // $(this.el).html(this.template(this.model.toJSON()));
       var tojson = this.model.toJSON();
       // console.log(tojson);
@@ -85,11 +86,11 @@ HubbubApp = (function(){
   });
 
   /* ******************************************
-  *  GraphView
+  *  ForestView
   *
   *  The DOM element for an item...
   * ******************************************/
-  hubbubApp.GraphView = Backbone.View.extend({
+  hubbubApp.ForestView = Backbone.View.extend({
 
     el: '#items',
 
@@ -98,7 +99,7 @@ HubbubApp = (function(){
     },
 
     initialize: function() {
-      this.paper = Raphael('items', 200, 500);
+      this.paper = new Raphael('items', 200, 500);
 
       // Creates circle at x = 50, y = 40, with radius 10
       var circle = this.paper.circle(50, 40, 10);
@@ -199,7 +200,7 @@ HubbubApp = (function(){
       hubbubApp.Items.bind('all',   this.render, this);
       
       this.addItemView = new hubbubApp.AddItemView();
-      this.graphView = new hubbubApp.GraphView();
+      this.forestView = new hubbubApp.ForestView();
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
@@ -234,8 +235,12 @@ HubbubApp = (function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     addOne: function(item) {
-      var view = new hubbubApp.ItemView({model: item});
-      $("#item-list").append(view.render().el);
+      var itemView = new hubbubApp.ItemView({model: item});
+
+      // Draw the item onto the forest view
+      itemView.render();
+
+      //$("#item-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
