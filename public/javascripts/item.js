@@ -30,7 +30,7 @@ HubbubApp = (function(){
   hubbubApp.Items = new hubbubApp.ItemList();
 
   /* ******************************************
-  *  Items View
+  *  Item View
   *
   *  The DOM element for an item...
   * ******************************************/
@@ -81,6 +81,36 @@ HubbubApp = (function(){
     // Remove the item, destroy the model.
     clear: function() {
       this.model.destroy();
+    }
+  });
+
+  /* ******************************************
+  *  GraphView
+  *
+  *  The DOM element for an item...
+  * ******************************************/
+  hubbubApp.GraphView = Backbone.View.extend({
+
+    el: '#items',
+
+    // The DOM events specific to an item.
+    events: {
+    },
+
+    initialize: function() {
+      this.paper = Raphael('items', 200, 500);
+
+      // Creates circle at x = 50, y = 40, with radius 10
+      var circle = this.paper.circle(50, 40, 10);
+
+      // Sets the fill attribute of the circle to red (#f00)
+      circle.attr("fill", "#f00");
+
+      // Sets the stroke attribute of the circle to white
+      circle.attr("stroke", "#fff");
+    },
+
+    render: function() {
     }
   });
 
@@ -169,6 +199,7 @@ HubbubApp = (function(){
       hubbubApp.Items.bind('all',   this.render, this);
       
       this.addItemView = new hubbubApp.AddItemView();
+      this.graphView = new hubbubApp.GraphView();
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
