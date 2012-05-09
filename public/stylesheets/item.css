@@ -144,10 +144,8 @@ body {
   background-position: 0 -20px;
 }
 .item_hover {
-  position: absolute; 
-  bottom: -30px; 
-  left: 0; 
-  background-color: lightgray; 
+  background-color: lightgray;
   border: 1px solid black; 
-  width: 150px;  
+  width: 150px;
+  height: 30px;
 }

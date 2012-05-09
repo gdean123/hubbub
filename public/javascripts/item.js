@@ -86,6 +86,32 @@ HubbubApp = (function(){
   });
 
   /* ******************************************
+  *  HoverMenuView
+  *
+  *  The DOM element for an item's hover menu.
+  * ******************************************/
+  hubbubApp.HoverMenuView = Backbone.View.extend({
+
+    // Cache the template function.
+    template: _.template($('#hover-template').text()),
+
+    // The DOM events specific to an item.
+    events: {
+    },
+
+    initialize: function() {
+    },
+
+    render: function() {
+      $(this.el).html(this.template({
+        top: this.options.top,
+        left: this.options.left
+      }));
+      return this;
+    }
+  });
+
+  /* ******************************************
   *  ForestView
   *
   *  The DOM element for an item...
@@ -100,13 +126,23 @@ HubbubApp = (function(){
 
     initialize: function() {
       this.paper = new Raphael('items', 200, 500);
-
-      hubbubApp.Items.bind('add',   this.addOne, this);
       hubbubApp.Items.bind('all', this.render, this);
     },
     
     addOne: function(item) {
-      this.paper.text(50, 50, item.get("description"));
+      var x = Math.floor(Math.random()*300),
+          y = Math.floor(Math.random()*300);
+
+      var glyph = this.paper.text(x, y, item.get("description"));
+
+      var that = this;
+      glyph.mouseover(function(){
+        // Create a new hover menu
+        var hoverMenuView = new hubbubApp.HoverMenuView({top: x-10, left:y});
+
+        // Append it to the DOM
+        $(that.el).append($(hoverMenuView.render().el));
+      });
     },
     
     render: function() {
@@ -182,10 +218,10 @@ HubbubApp = (function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #add_item_btn"             : "showAddItemDialog",
-      "mouseover #item-list li .item"   : "showHover",
-      "mouseout #item-list li .item"    : "hideHover",
-      "click #item-list li .item .add_child" : "showAddItemDialog"
+      "click #add_item_btn"             : "showAddItemDialog"
+      //"mouseover #item-list li .item"   : "showHover",
+      //"mouseout #item-list li .item"    : "hideHover",
+      //"click #item-list li .item .add_child" : "showAddItemDialog"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -212,7 +248,8 @@ HubbubApp = (function(){
     showAddItemDialog: function() {
       this.addItemView.show();
     },
-    
+
+    // To be deleted?
     showHover: function (ev) {
       var target = ev.currentTarget;
       var self = this;
