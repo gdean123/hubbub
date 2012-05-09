@@ -101,17 +101,17 @@ HubbubApp = (function(){
     initialize: function() {
       this.paper = new Raphael('items', 200, 500);
 
-      // Creates circle at x = 50, y = 40, with radius 10
-      var circle = this.paper.circle(50, 40, 10);
-
-      // Sets the fill attribute of the circle to red (#f00)
-      circle.attr("fill", "#f00");
-
-      // Sets the stroke attribute of the circle to white
-      circle.attr("stroke", "#fff");
+      hubbubApp.Items.bind('add',   this.addOne, this);
+      hubbubApp.Items.bind('all', this.render, this);
     },
-
+    
+    addOne: function(item) {
+      this.paper.text(50, 50, item.get("description"));
+    },
+    
     render: function() {
+      this.paper.clear();
+      hubbubApp.Items.each(this.addOne, this);
     }
   });
 
@@ -194,10 +194,6 @@ HubbubApp = (function(){
     initialize: function() {
       this.description    = this.$("#description");
       this.details        = this.$("#details");
-
-      hubbubApp.Items.bind('add',   this.addOne, this);
-      hubbubApp.Items.bind('reset', this.addAll, this);
-      hubbubApp.Items.bind('all',   this.render, this);
       
       this.addItemView = new hubbubApp.AddItemView();
       this.forestView = new hubbubApp.ForestView();
@@ -230,22 +226,6 @@ HubbubApp = (function(){
       var self = this;
       // console.log();
       $(target).children(".item_hover").hide(); 
-    },
-
-    // Add a single todo item to the list by creating a view for it, and
-    // appending its element to the `<ul>`.
-    addOne: function(item) {
-      var itemView = new hubbubApp.ItemView({model: item});
-
-      // Draw the item onto the forest view
-      itemView.render();
-
-      //$("#item-list").append(view.render().el);
-    },
-
-    // Add all items in the **Todos** collection at once.
-    addAll: function() {
-      hubbubApp.Items.each(this.addOne);
     },
 
     // If you hit return in the main input field, and there is text to save,
