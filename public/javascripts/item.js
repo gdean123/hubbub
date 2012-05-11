@@ -30,62 +30,6 @@ HubbubApp = (function(){
   hubbubApp.Items = new hubbubApp.ItemList();
 
   /* ******************************************
-  *  Item View
-  *
-  *  The DOM element for an item...
-  * ******************************************/
-  hubbubApp.ItemView = Backbone.View.extend({
-
-    //... is a list tag.
-    tagName:  "li",
-
-    // Cache the template function for a single item.
-    template: _.template($('#item-template').text()),
-
-    // The DOM events specific to an item.
-    events: {
-      "click span.item-destroy"       : "clear"
-    },
-
-    // The ItemView listens for changes to its model, re-rendering.
-    initialize: function() {
-      this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
-	},
-
-    // Re-render the contents of the todo item.
-    render: function() {
-
-      // $(this.el).html(this.template(this.model.toJSON()));
-      var tojson = this.model.toJSON();
-      // console.log(tojson);
-      $(this.el).html(this.template(tojson));
-      this.setText();
-      // this.createHoverMenu();
-	    return this;
-	  },
-    
-    // To avoid XSS (not that it would be harmful in this particular app),
-    // we use `jQuery.text` to set the contents of the todo item.
-    setText: function() {
-      var description = this.model.get("description");
-      var details = this.model.get("details");
-      this.$('.description-text').text(description);
-      this.$('.details-text').text(details);
-    },
-        
-    // Remove this view from the DOM.
-    remove: function() {
-      $(this.el).remove();
-    },
-
-    // Remove the item, destroy the model.
-    clear: function() {
-      this.model.destroy();
-    }
-  });
-
-  /* ******************************************
   *  HoverMenuView
   *
   *  The DOM element for an item's hover menu.
