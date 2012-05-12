@@ -15,7 +15,6 @@ src_files:
   - public/javascripts/jquery.min.js  
   - public/javascripts/jquery-ui.js
   - public/javascripts/jquery.qtip.js
-  - public/javascripts/jquery.hoverIntent.js
   - public/javascripts/raphael.js
   - public/javascripts/underscore-min.js
   - public/javascripts/backbone-min.js

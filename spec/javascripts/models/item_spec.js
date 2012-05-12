@@ -2,8 +2,8 @@ describe("item", function() {
   var hubbubApp;
   beforeEach(function(){
     hubbubApp = HubbubApp();
-	this.item = new hubbubApp.Item({"description": "test"})
-	this.item.url = "/";
+	  this.item = new hubbubApp.Item({"description": "test"})
+	  this.item.url = "/";
   });
 
   it("should create a new item with valid attributes", function() {
