@@ -1,6 +1,11 @@
 HubbubApp = (function(){
   var hubbubApp = {};
 
+  // Use Mustache syntax for templating
+  _.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+  };
+
   /* ******************************************
   *  Item Model
   *

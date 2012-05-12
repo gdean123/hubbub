@@ -1,23 +1,17 @@
 describe("HoverMenuView", function() {
-  var hubbubApp, appView;
-  beforeEach(function(){
-	loadFixtures("_dialog-template.html");
 
-    hubbubApp = HubbubApp();
-    this.item = new hubbubApp.Item({"description": "test"})
-//    this.view = new hubbubApp.ItemView({model: this.item});
-//    this.view.render();
+  beforeEach(function(){
+    loadFixtures("_hover-template.html");
+
+    this.hubbubApp = HubbubApp();
+    this.view = new this.hubbubApp.HoverMenuView({top: 0, left: 0});
+    this.view.render();
   });
 
-//  describe("Instantiation", function() {
-//      it("should create a list element", function() {
-//            expect(this.view.el.nodeName).toEqual("LI");
-//      });
-//
-//      it("should render a description", function() {
-//            expect(this.view.el.innerHTML).toContain("test");
-//      });
-//
-//  });
+  describe("Render", function() {
+    it("should render the add item icon", function() {
+      expect($(this.view.el)).toContain('img.add_child');
+    });
+  });
 });
 
