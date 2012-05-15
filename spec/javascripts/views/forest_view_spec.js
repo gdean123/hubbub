@@ -1,15 +1,15 @@
 describe("ForestView", function() {
 
   beforeEach(function(){
-    loadFixtures("_forest-template.html");
+    loadFixtures("_main-template.html");
     
     this.hubbubApp = HubbubApp();
     
-    // this.appView = this.hubbubApp.AppView();
+    this.appView = new this.hubbubApp.AppView();
     this.item = new this.hubbubApp.Item({"description": "my description"});
     this.hubbubApp.Items.add([this.item]);
 
-    this.view = new this.hubbubApp.ForestView();
+    this.view = this.appView.forestView;
     this.view.render();
   });
 
@@ -20,13 +20,13 @@ describe("ForestView", function() {
   });
   
   
-  // describe("Create Item", function() {
-  //   it("should create a new item", function() {
-  //     var spy = sinon.spy(this.appView.showAddItemDialog);
-  //     $("img.add_child").click();
-  //     expect(spy.called).toBeTruthy();
-  //   });
-  // });
+  describe("Add item button", function() {
+     it("should show add item dialog", function() {
+       var spy = sinon.spy(this.appView.showAddItemDialog);
+       $("img.add_child").click();
+       expect(spy).toHaveBeenCalled();
+     });
+  });
   
 });
 

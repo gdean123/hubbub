@@ -46,9 +46,14 @@ HubbubApp = (function(){
 
     // The DOM events specific to an item.
     events: {
+        "click .add_child":  "addChild"
     },
 
     initialize: function() {
+    },
+
+    addChild: function() {
+      this.options.showAddItemDialog();
     },
 
     render: function() {
@@ -87,7 +92,8 @@ HubbubApp = (function(){
       var that = this;
       glyph.mouseover(function(){
         // Create a new hover menu
-        var hoverMenuView = new hubbubApp.HoverMenuView({top: x-10, left:y});
+        var hoverMenuView = new hubbubApp.HoverMenuView({showAddItemDialog: this.showAddItemDialog,
+            top: x-10, left:y});
 
         // Append it to the DOM
         $(that.el).append($(hoverMenuView.render().el));
@@ -181,7 +187,7 @@ HubbubApp = (function(){
       this.details        = this.$("#details");
       
       this.addItemView = new hubbubApp.AddItemView();
-      this.forestView = new hubbubApp.ForestView();
+      this.forestView = new hubbubApp.ForestView({showAddItemDialog: this.showAddItemDialog});
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
