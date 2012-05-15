@@ -4,7 +4,7 @@ describe("ForestView", function() {
     loadFixtures("_main-template.html");
     
     this.hubbubApp = HubbubApp();
-    
+
     this.appView = new this.hubbubApp.AppView();
     this.item = new this.hubbubApp.Item({"description": "my description"});
     this.hubbubApp.Items.add([this.item]);
@@ -18,15 +18,6 @@ describe("ForestView", function() {
       expect(this.view.$("svg text tspan")).toHaveText('my description');
     });
   });
-  
-  
-  describe("Add item button", function() {
-     it("should show add item dialog", function() {
-       var spy = sinon.spy(this.appView.showAddItemDialog);
-       $("img.add_child").click();
-       expect(spy).toHaveBeenCalled();
-     });
-  });
-  
+
 });
 

@@ -92,8 +92,10 @@ HubbubApp = (function(){
       var that = this;
       glyph.mouseover(function(){
         // Create a new hover menu
-        var hoverMenuView = new hubbubApp.HoverMenuView({showAddItemDialog: this.showAddItemDialog,
-            top: x-10, left:y});
+        var hoverMenuView = new hubbubApp.HoverMenuView({
+	      showAddItemDialog: that.options.showAddItemDialog,
+          top: x-10, left:y
+        });
 
         // Append it to the DOM
         $(that.el).append($(hoverMenuView.render().el));
@@ -174,9 +176,6 @@ HubbubApp = (function(){
     // Delegated events for creating new items, and clearing completed ones.
     events: {
       "click #add_item_btn"             : "showAddItemDialog"
-      //"mouseover #item-list li .item"   : "showHover",
-      //"mouseout #item-list li .item"    : "hideHover",
-      //"click #item-list li .item .add_child" : "showAddItemDialog"
     },
 
     // At initialization we bind to the relevant events on the `Items`
@@ -186,8 +185,9 @@ HubbubApp = (function(){
       this.description    = this.$("#description");
       this.details        = this.$("#details");
       
+      // Create all subviews
       this.addItemView = new hubbubApp.AddItemView();
-      this.forestView = new hubbubApp.ForestView({showAddItemDialog: this.showAddItemDialog});
+      this.forestView = new hubbubApp.ForestView({showAddItemDialog: this.addItemView.show});
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
