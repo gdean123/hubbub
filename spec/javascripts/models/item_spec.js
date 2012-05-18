@@ -1,4 +1,4 @@
-describe("item", function() {
+describe("Item", function() {
   var hubbubApp;
   beforeEach(function(){
     hubbubApp = HubbubApp();
