@@ -2,13 +2,13 @@ describe("HoverMenuView", function() {
 
   beforeEach(function(){
     loadFixtures("_main-template.html", "_hover-template.html");
+    this.showAddItemDialogSpy = sinon.spy();
 
     this.hubbubApp = HubbubApp();
 
     this.appView = new this.hubbubApp.AppView();
-    this.addItemView = this.appView.addItemView;
     this.hoverMenuView = new this.hubbubApp.HoverMenuView({
-	  showAddItemDialog: this.addItemView.show,
+	  showAddItemDialog: this.showAddItemDialogSpy,
 	  top: 0,
 	  left: 0
 	});
@@ -16,18 +16,16 @@ describe("HoverMenuView", function() {
     this.hoverMenuView.render();
   });
 
-  describe("Render", function() {
+  describe("render", function() {
     it("should render the add item icon", function() {
       expect($(this.hoverMenuView.el)).toContain('img.add_child');
     });
   });
 
-  describe("Add item button", function() {
-     it("should show add item dialog", function() {
-       var showAddItemViewSpy = sinon.spy(this.addItemView.show);
+  describe("add item button", function() {
+     it("should show the add item dialog", function() {
        this.hoverMenuView.$("img.add_child").click();
-       //this.hoverMenuView.addChild();
-       expect(showAddItemViewSpy).toHaveBeenCalled();
+       expect(this.showAddItemDialogSpy).toHaveBeenCalled();
      });
   });
 

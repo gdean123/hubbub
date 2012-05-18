@@ -13,7 +13,7 @@ describe("ForestView", function() {
     this.view.render();
   });
 
-  describe("Render", function() {
+  describe("render", function() {
     it("should render the description of each item", function() {
       expect(this.view.$("svg text tspan")).toHaveText('my description');
     });
