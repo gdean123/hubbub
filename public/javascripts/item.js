@@ -72,20 +72,20 @@ HubbubApp = (function(){
   * ******************************************/
   hubbubApp.ForestView = Backbone.View.extend({
 
-    el: '#items',
+    el: '#forest',
 
     // The DOM events specific to an item.
     events: {
     },
 
     initialize: function() {
-      this.paper = new Raphael('items', 200, 500);
+      this.paper = new Raphael('forest', this.el.width, this.el.height);
       hubbubApp.Items.bind('all', this.render, this);
     },
     
     addOne: function(item) {
-      var x = Math.floor(Math.random()*300),
-          y = Math.floor(Math.random()*300);
+      var x = Math.floor(Math.random()*1000),
+          y = Math.floor(Math.random()*600);
 
       var glyph = this.paper.text(x, y, item.get("description"));
 
@@ -208,16 +208,15 @@ HubbubApp = (function(){
     showHover: function (ev) {
       var target = ev.currentTarget;
       var self = this;
-      // console.log("in showHover");
       
-      $(target).children(".item_hover").show();
+      $(target).children(".hover_menu").show();
     },
     
     hideHover: function (ev) {
       var target = ev.currentTarget;
       var self = this;
-      // console.log();
-      $(target).children(".item_hover").hide(); 
+
+      $(target).children(".hover_menu").hide(); 
     },
 
     // If you hit return in the main input field, and there is text to save,
