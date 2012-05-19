@@ -79,16 +79,17 @@ HubbubApp = (function(){
     },
 
     initialize: function() {
-      this.paper = new Raphael('forest', this.el.width, this.el.height);
+      this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
     },
     
     addOne: function(item) {
-      var x = Math.floor(Math.random()*1000),
-          y = Math.floor(Math.random()*600);
+      var x = Math.floor(Math.random()*this.$el.width() * .9),
+          y = Math.floor(Math.random()*this.$el.height() * .7);
 
       var glyph = this.paper.text(x, y, item.get("description"));
-
+      glyph.attr("font-size", 32);
+      
       var that = this;
       glyph.mouseover(function(){
         // Create a new hover menu
