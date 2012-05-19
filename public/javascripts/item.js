@@ -89,7 +89,7 @@ HubbubApp = (function(){
 
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
-      
+
       var that = this;
       glyph.mouseover(function(){
         // Create a new hover menu
