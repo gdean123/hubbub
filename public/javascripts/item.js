@@ -84,8 +84,8 @@ HubbubApp = (function(){
     },
     
     addOne: function(item) {
-      var x = Math.floor(Math.random()*this.$el.width() * .9),
-          y = Math.floor(Math.random()*this.$el.height() * .7);
+      var x = Math.floor(Math.random()*this.$el.width() * 0.9),
+          y = Math.floor(Math.random()*this.$el.height() * 0.7);
 
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
