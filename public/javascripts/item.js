@@ -93,9 +93,10 @@ HubbubApp = (function(){
       var that = this;
       glyph.mouseover(function(){
         // Create a new hover menu
+        //to compensate the size of the text box we added few more pixels
         var hoverMenuView = new hubbubApp.HoverMenuView({
 	      showAddItemDialog: that.options.showAddItemDialog,
-          top: x-10, left:y
+          top: y+100, left:x-25
         });
 
         // Append it to the DOM
