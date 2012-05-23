@@ -100,8 +100,14 @@ HubbubApp = (function(){
         });
 
         // Append it to the DOM
-        $(that.el).append($(hoverMenuView.render().el));
+        //console.log($(that.el).last());
+        $(that.el).last().append($(hoverMenuView.render().el));
       });
+
+//      glyph.mouseout(function(){
+//        $(".hover_menu").parent().empty().remove();
+//      });
+
     },
     
     render: function() {
