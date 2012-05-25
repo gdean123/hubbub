@@ -95,7 +95,7 @@ HubbubApp = (function(){
         var hoverBottom = hoverTop + hoverHeight;
         
         
-        return {top:hoverTop, left:hoverLeft, right:hoverRight, bottom:hoverBottom}
+        return {top:hoverTop, left:hoverLeft, right:hoverRight, bottom:hoverBottom};
 
         
         // console.log($(".hover_menu").position().left);
@@ -111,7 +111,7 @@ HubbubApp = (function(){
       return {top: Math.min(hoverBox.top, itemBox.y+86), 
               left: Math.min(hoverBox.left, itemBox.x), 
               right: Math.max(hoverBox.right, itemBox.x2), 
-              bottom: Math.max(hoverBox.bottom, itemBox.y2)}
+              bottom: Math.max(hoverBox.bottom, itemBox.y2)};
       
     },
     
