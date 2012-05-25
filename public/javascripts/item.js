@@ -76,14 +76,15 @@ HubbubApp = (function(){
 
     // The DOM events specific to an item.
     events: {
-      "mousemove": "checkHoverMenu"
+      "mousemove": "refreshHoverMenu"
     },
 
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
     },
-    
+
+    // Find the bounding box of the current hover menu
     getHoverBox: function() {
       if(this.currentGlyph) {
         var hoverWidth = $(".hover_menu").width();
@@ -93,34 +94,62 @@ HubbubApp = (function(){
         
         var hoverRight = hoverLeft + hoverWidth;
         var hoverBottom = hoverTop + hoverHeight;
-        
-        
-        return {top:hoverTop, left:hoverLeft, right:hoverRight, bottom:hoverBottom};
 
-        
-        // console.log($(".hover_menu").position().left);
-        // console.log(this.currentGlyph.getBBox()); 
+        return {top:hoverTop,
+                left:hoverLeft,
+                right:hoverRight,
+                bottom:hoverBottom};
       }
     },
-    
+
+    // Find the minimal bounding box that contains the both the hover menu
+    // and the current item glyph
     getBoundingBox: function() {
-      var hoverBox = this.getHoverBox();
-      var itemBox = this.currentGlyph.getBBox();
+      var hoverBox = this.getHoverBox();         // Hover menu bounding box
+      var itemBox = this.currentGlyph.getBBox(); // Item's bounding box
       
       // TODO We need to address why this needs a +86 on the y value
-      return {top: Math.min(hoverBox.top, itemBox.y+86), 
-              left: Math.min(hoverBox.left, itemBox.x), 
-              right: Math.max(hoverBox.right, itemBox.x2), 
-              bottom: Math.max(hoverBox.bottom, itemBox.y2)};
-      
+      return {top:    Math.min(hoverBox.top,    itemBox.y+86), // y  = top
+              left:   Math.min(hoverBox.left,   itemBox.x),    // x  = left
+              right:  Math.max(hoverBox.right,  itemBox.x2),   // x2 = right
+              bottom: Math.max(hoverBox.bottom, itemBox.y2)};  // y2 = bottom
     },
-    
-    checkHoverMenu: function(e) {
+
+    getPaddedBoundingBox: function() {
+      var boundingBox = this.getBoundingBox();
+      var PADDING = 20;
+
+      return {top:    boundingBox.top    - PADDING,
+              left:   boundingBox.left   - PADDING,
+              right:  boundingBox.right  + PADDING,
+              bottom: boundingBox.bottom + PADDING};
+    },
+
+    // Check whether or not the given point is outside of the given rectangle
+    isOutside: function(point, rectangle) {
+      return point.x < rectangle.left  ||
+             point.x > rectangle.right ||
+             point.y < rectangle.top   ||
+             point.y > rectangle.bottom;
+    },
+
+    refreshHoverMenu: function(e) {
       if(this.currentGlyph) {
-        var bBox = this.getBoundingBox();
-        var pageCoords = "( " + (e.pageX-20) + ", " + (e.pageY-95) + " )";            
-        // TODO - Write an if statement that checks to see if our page coords 
-        // are outside of the bounding box, destroy the hover menu
+        var paddedBoundingBox = this.getPaddedBoundingBox();
+        var cursor = {
+          x: e.pageX-20,
+          y: e.pageY-95
+        };
+
+        // If the cursor is outside of the bounding box, destroy the hover menu
+        if (this.isOutside(cursor, paddedBoundingBox))
+        {
+          // Destroy the hover menu
+          $(".hover_menu").parent().empty().remove();
+
+          // There is no longer a current glyph
+          this.currentGlyph = null;
+        }
       }
     },
     
@@ -133,25 +162,20 @@ HubbubApp = (function(){
 
       var that = this;
       glyph.mouseover(function(){
+        // Store the current glyph so that we can destroy the hover menu later
+        that.currentGlyph = this;
+
         // Create a new hover menu
-        //to compensate the size of the text box we added few more pixels
+        // To compensate the size of the text box we added few more pixels
         var hoverMenuView = new hubbubApp.HoverMenuView({
-	      showAddItemDialog: that.options.showAddItemDialog,
+	        showAddItemDialog: that.options.showAddItemDialog,
           top: y+100, left:x-25
         });
-
-        // store glyph for future reference
-        that.currentGlyph = this; 
 
         // Append it to the DOM
         //console.log($(that.el).last());
         $(that.el).last().append($(hoverMenuView.render().el));
       });
-
-//      glyph.mouseout(function(){
-//        $(".hover_menu").parent().empty().remove();
-//      });
-
     },
     
     render: function() {

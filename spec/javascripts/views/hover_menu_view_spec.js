@@ -8,10 +8,10 @@ describe("HoverMenuView", function() {
 
     this.appView = new this.hubbubApp.AppView();
     this.hoverMenuView = new this.hubbubApp.HoverMenuView({
-	  showAddItemDialog: this.showAddItemDialogSpy,
-	  top: 0,
-	  left: 0
-	});
+      showAddItemDialog: this.showAddItemDialogSpy,
+      top: 0,
+      left: 0
+    });
 
     this.hoverMenuView.render();
   });
