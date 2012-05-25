@@ -76,11 +76,52 @@ HubbubApp = (function(){
 
     // The DOM events specific to an item.
     events: {
+      "mousemove": "checkHoverMenu"
     },
 
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
+    },
+    
+    getHoverBox: function() {
+      if(this.currentGlyph) {
+        var hoverWidth = $(".hover_menu").width();
+        var hoverHeight = $(".hover_menu").height();
+        var hoverLeft = $(".hover_menu").position().left;
+        var hoverTop = $(".hover_menu").position().top;
+        
+        var hoverRight = hoverLeft + hoverWidth;
+        var hoverBottom = hoverTop + hoverHeight;
+        
+        
+        return {top:hoverTop, left:hoverLeft, right:hoverRight, bottom:hoverBottom}
+
+        
+        // console.log($(".hover_menu").position().left);
+        // console.log(this.currentGlyph.getBBox()); 
+      }
+    },
+    
+    getBoundingBox: function() {
+      var hoverBox = this.getHoverBox();
+      var itemBox = this.currentGlyph.getBBox();
+      
+      // TODO We need to address why this needs a +86 on the y value
+      return {top: Math.min(hoverBox.top, itemBox.y+86), 
+              left: Math.min(hoverBox.left, itemBox.x), 
+              right: Math.max(hoverBox.right, itemBox.x2), 
+              bottom: Math.max(hoverBox.bottom, itemBox.y2)}
+      
+    },
+    
+    checkHoverMenu: function(e) {
+      if(this.currentGlyph) {
+        var bBox = this.getBoundingBox();
+        var pageCoords = "( " + (e.pageX-20) + ", " + (e.pageY-95) + " )";            
+        // TODO - Write an if statement that checks to see if our page coords 
+        // are outside of the bounding box, destroy the hover menu
+      }
     },
     
     addOne: function(item) {
@@ -98,6 +139,9 @@ HubbubApp = (function(){
 	      showAddItemDialog: that.options.showAddItemDialog,
           top: y+100, left:x-25
         });
+
+        // store glyph for future reference
+        that.currentGlyph = this; 
 
         // Append it to the DOM
         //console.log($(that.el).last());
