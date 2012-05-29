@@ -134,7 +134,7 @@ HubbubApp = (function(){
     },
 
     refreshHoverMenu: function(e) {
-      if(this.currentGlyph) {
+      if(this.currentGlyph) {  
         var paddedBoundingBox = this.getPaddedBoundingBox();
         var cursor = {
           x: e.pageX-20,
@@ -164,7 +164,14 @@ HubbubApp = (function(){
       glyph.mouseover(function(){
         // Store the current glyph so that we can destroy the hover menu later
         that.currentGlyph = this;
-
+        
+        // Clean up any open hover menus
+        try {          
+          $(".hover_menu").parent().empty().remove();          
+        } catch (err) {
+          // don't complain
+        }
+        
         // Create a new hover menu
         // To compensate the size of the text box we added few more pixels
         var hoverMenuView = new hubbubApp.HoverMenuView({
