@@ -162,6 +162,7 @@ HubbubApp = (function(){
 
       var that = this;
       glyph.mouseover(function(){
+        
         // Store the current glyph so that we can destroy the hover menu later
         that.currentGlyph = this;
         

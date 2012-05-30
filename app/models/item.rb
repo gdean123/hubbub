@@ -1,6 +1,6 @@
 class Item < ActiveRecord::Base
   attr_accessible :description, :details
-  # has_ancestry
+  has_ancestry
 
   validate :description, :presence => {:message => "Description can not be blank"}
   
