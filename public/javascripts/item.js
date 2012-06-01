@@ -53,13 +53,14 @@ HubbubApp = (function(){
     },
 
     addChild: function() {
-      this.options.showAddItemDialog();
+      console.log("In the hover menu view, parent_id =" + this.options.id);      
+      this.options.showAddItemDialog(this.options.id);
     },
 
     render: function() {
       $(this.el).html(this.template({
         top: this.options.top,
-        left: this.options.left
+        left: this.options.left,
       }));
       return this;
     }
@@ -160,7 +161,9 @@ HubbubApp = (function(){
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
 
-      var that = this;
+      //Pointer to the context of the Forest View
+      var that = this;   
+
       glyph.mouseover(function(){
         
         // Store the current glyph so that we can destroy the hover menu later
@@ -175,9 +178,10 @@ HubbubApp = (function(){
         
         // Create a new hover menu
         // To compensate the size of the text box we added few more pixels
+        console.log("At time of show, parent_id =" + item.get("id"));
         var hoverMenuView = new hubbubApp.HoverMenuView({
 	        showAddItemDialog: that.options.showAddItemDialog,
-          top: y+100, left:x-25
+          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
         });
 
         // Append it to the DOM
@@ -216,7 +220,9 @@ HubbubApp = (function(){
       $('#details').qtip("hide");
     },
 
-    show: function() {
+    show: function(parentId) {
+      console.log("I am in the show function in the addItemView and my parent_id =" + parentId);
+      this.parentId = parentId;
       $("#description").val("");
       $("#details").val("");
       $("#dialog").dialog("open");
@@ -232,12 +238,14 @@ HubbubApp = (function(){
     // Save the new item and jquery will close the dialog box
     create: function() {
       this.model = new hubbubApp.Item();
+      console.log("In the create function of the addItemView, the parent_id =" + this.parentId);
       this.model.set(
-          {description: $("#description").val(), details: $("#details").val()},
+          {description: $("#description").val(), details: $("#details").val(), parentId: this.parentId},
           {error: function(model, error)  {
             $('#description').qtip("show");
           }});
       if(this.model.isValid()) {
+        console.log("At time of save, parent_id =" + this.model.get("parent_id"));
         hubbubApp.Items.add(this.model);
         this.model.save();
         $('#description').qtip("hide");
@@ -285,7 +293,8 @@ HubbubApp = (function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     showAddItemDialog: function() {
-      this.addItemView.show();
+      console.log("I am at the end of the chain!");    
+      this.addItemView.show(null);
     },
 
     // To be deleted?
