@@ -160,6 +160,9 @@ HubbubApp = (function(){
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
 
+      // hook up 
+      var lineGlyph = this.paper.path("M10 10L90 90");
+      
       //Pointer to the context of the Forest View
       var that = this;   
 
