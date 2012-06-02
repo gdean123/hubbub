@@ -15,15 +15,12 @@ describe("Item", function() {
 	  expect(this.item.get("description")).toEqual("test");
   });
   
-  it("it should either belong to a parent or be a root", function() {
-    console.log(this.item);
-    expect(this.item.get("parent_id")).toBe(null);
-        
-    
-    //     this.child_item = new hubbubApp.Item({"description": "child", "parent_id": this.item.get("id")});
-    // this.child_item.url = "/";
-    // 
-    //     expect(this.child_item.get("parent_id")).toEqual(this.item.get("id"));
+  describe("child", function(){
+    it("should belong to a parent", function() {      
+      this.child_item = new hubbubApp.Item({"description": "child", "parent_id": this.item.get("id")});
+      this.child_item.url = "/";
+      expect(this.child_item.get("parent_id")).toBe(23);
+    });
   });
 
 });

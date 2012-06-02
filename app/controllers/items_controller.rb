@@ -48,6 +48,7 @@ class ItemsController < ApplicationController
   # POST /items.xml
   def create
     item = Item.create! params
+    puts item.parent_id
     
     render :json => item
     
