@@ -59,7 +59,7 @@ HubbubApp = (function(){
     render: function() {
       $(this.el).html(this.template({
         top: this.options.top,
-        left: this.options.left,
+        left: this.options.left
       }));
       return this;
     }
