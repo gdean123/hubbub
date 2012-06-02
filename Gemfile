@@ -1,12 +1,12 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.12'
-gem 'pg'
 gem 'heroku'
 gem 'jquery-rails'
 gem 'ancestry'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
+gem 'pg'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -38,3 +38,4 @@ group :test do
   gem 'turn', '0.8.2', :require => false
 	gem 'cucumber-rails', :require => false
 end
+

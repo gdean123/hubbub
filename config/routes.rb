@@ -51,7 +51,10 @@ Hubbub::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   root :to => "pages#home"
-  match 'forest' => 'pages#forest'
+  match 'forest' => "pages#forest"
+
+  # https://code.google.com/apis/console/b/0/?pli=1#project:223922275629:access
+  match 'auth/google_oauth2/callback' => "pages#forest"
 
   # See how all your routes lay out with "rake routes"
 
