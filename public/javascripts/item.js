@@ -53,7 +53,6 @@ HubbubApp = (function(){
     },
 
     addChild: function() {
-      console.log("In the hover menu view, parent_id =" + this.options.id);      
       this.options.showAddItemDialog(this.options.id);
     },
 
@@ -178,7 +177,6 @@ HubbubApp = (function(){
         
         // Create a new hover menu
         // To compensate the size of the text box we added few more pixels
-        console.log("At time of show, parent_id =" + item.get("id"));
         var hoverMenuView = new hubbubApp.HoverMenuView({
 	        showAddItemDialog: that.options.showAddItemDialog,
           top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
@@ -206,7 +204,7 @@ HubbubApp = (function(){
     events: {
       "keypress #description": "checkText",
       "keypress #details": "checkText",
-      // "click .create":  "triggerCreate",
+      "click .create":  "create",
       "click .cancel":  "cancel"
     },
 
@@ -225,15 +223,9 @@ HubbubApp = (function(){
     },
 
     show: function(parentId) {
-      console.log("I am in the show function in the addItemView and my parent_id =" + parentId);
       this.parentId = parentId;
-      
-     
-      var o = $(".create");
-      _.extend(o, Backbone.Events);
-      o.bind('click', this.create, this);
-      // this.delegateEvents(); // START HERE - for some reason this doesn't have access to delegateEvents
-                 
+      $('.create').attr("data-parent-id", this.parentId);
+                      
       $("#description").val("");
       $("#details").val("");
       $("#dialog").dialog("open");
@@ -247,16 +239,15 @@ HubbubApp = (function(){
     },
 
     // Save the new item and jquery will close the dialog box
-    create: function() {
+    create: function(ev) {
+      this.parentId = $(ev.currentTarget).attr("data-parent-id");
       this.model = new hubbubApp.Item();
-      console.log("In the create function of the addItemView, the parent_id =" + this.parentId);
       this.model.set(
-          {description: $("#description").val(), details: $("#details").val(), parentId: this.parentId},
+          {description: $("#description").val(), details: $("#details").val(), parent_id: this.parentId},
           {error: function(model, error)  {
             $('#description').qtip("show");
           }});
       if(this.model.isValid()) {
-        console.log("At time of save, parent_id =" + this.model.get("parent_id"));
         hubbubApp.Items.add(this.model);
         this.model.save();
         $('#description').qtip("hide");
@@ -304,7 +295,6 @@ HubbubApp = (function(){
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     showAddItemDialog: function() {
-      console.log("I am at the end of the chain!");    
       this.addItemView.show(null);
     },
 
