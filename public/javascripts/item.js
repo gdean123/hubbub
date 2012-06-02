@@ -206,7 +206,7 @@ HubbubApp = (function(){
     events: {
       "keypress #description": "checkText",
       "keypress #details": "checkText",
-      "click .create":  "create",
+      // "click .create":  "triggerCreate",
       "click .cancel":  "cancel"
     },
 
@@ -220,9 +220,20 @@ HubbubApp = (function(){
       $('#details').qtip("hide");
     },
 
+    triggerCreate: function() {
+      
+    },
+
     show: function(parentId) {
       console.log("I am in the show function in the addItemView and my parent_id =" + parentId);
       this.parentId = parentId;
+      
+     
+      var o = $(".create");
+      _.extend(o, Backbone.Events);
+      o.bind('click', this.create, this);
+      // this.delegateEvents(); // START HERE - for some reason this doesn't have access to delegateEvents
+                 
       $("#description").val("");
       $("#details").val("");
       $("#dialog").dialog("open");
