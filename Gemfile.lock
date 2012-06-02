@@ -69,6 +69,7 @@ GEM
       json (>= 1.4.6)
     gherkin (2.9.3-x86-mingw32)
       json (>= 1.4.6)
+    hashie (1.2.0)
     heroku (2.23.0)
       launchy (>= 0.3.2)
       netrc (~> 0.7.1)
@@ -100,6 +101,9 @@ GEM
     netrc (0.7.1)
     nokogiri (1.5.2)
     nokogiri (1.5.2-x86-mingw32)
+    omniauth (1.1.0)
+      hashie (~> 1.2)
+      rack
     pg (0.13.2)
     pg (0.13.2-x86-mingw32)
     polyglot (0.3.3)
@@ -185,6 +189,7 @@ DEPENDENCIES
   jasmine
   jquery-rails
   jslint_on_rails
+  omniauth
   pg
   rails (= 3.0.12)
   rspec-rails

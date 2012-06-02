@@ -5,6 +5,7 @@ gem 'pg'
 gem 'heroku'
 gem 'jquery-rails'
 gem 'ancestry'
+gem 'omniauth'
 
 # Gems used only for assets and not required
 # in production environments by default.
