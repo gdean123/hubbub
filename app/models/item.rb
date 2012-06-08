@@ -1,11 +1,12 @@
 class Item < ActiveRecord::Base
-  attr_accessible :description, :details, :parent_id
   has_ancestry
+  attr_accessible :description, :details
 
   validate :description, :presence => {:message => "Description can not be blank"}
   
-  def to_json(options = {})
-    super(options.merge(:only => [ :id, :parent_id, :description, :details ]))
+  def as_json(options = {})
+    puts parent_id
+    super(:only => [ :id, :parent_id, :description, :details ], :methods => :parent_id)
   end
   
 end

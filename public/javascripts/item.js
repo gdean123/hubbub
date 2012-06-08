@@ -28,7 +28,24 @@ HubbubApp = (function(){
   hubbubApp.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: hubbubApp.Item,
-    url :'/items'
+    url :'/items',
+    initialize: function() {
+      this.bind("reset", this.updateItemPositions);
+    },
+    updateItemPositions: function() {
+      // console.log(this);
+      this.each(function(item) {
+        // var x = Math.floor(Math.random()*this.$el.width() * 0.9),
+        //     y = Math.floor(Math.random()*this.$el.height() * 0.7);
+        
+        // TODO - change out the hardcoded values
+        var x = Math.floor(Math.random()*600),
+            y = Math.floor(Math.random()*400);
+        
+        item.set({x: x});
+        item.set({y: y});
+      });
+    }    
   });
 
   // Create our collection of **Items**.
@@ -153,15 +170,32 @@ HubbubApp = (function(){
       }
     },
     
-    addOne: function(item) {
-      var x = Math.floor(Math.random()*this.$el.width() * 0.9),
-          y = Math.floor(Math.random()*this.$el.height() * 0.7);
-
+    getParent: function(item) {
+      var output = null;
+      hubbubApp.Items.each(function(currentItem) {
+        if(item.get("parent_id") === currentItem.get("id")){          
+          output = currentItem;
+        } 
+      });
+      return output;      
+    },
+    
+    addOne: function(item) {  
+      var x = item.get("x"), y = item.get("y");    
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
 
-      // hook up 
-      var lineGlyph = this.paper.path("M10 10L90 90");
+      var parentItem = this.getParent(item);
+      
+      // hook up if not null
+      if(parentItem !== null && 
+         parentItem.get("x") !== undefined && 
+         parentItem.get("y") !== undefined && 
+         x !== undefined && 
+         y !== undefined){
+        // console.log("M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
+        this.paper.path("M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);        
+      }
       
       //Pointer to the context of the Forest View
       var that = this;   

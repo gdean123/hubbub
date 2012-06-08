@@ -2,7 +2,7 @@ class ItemsController < ApplicationController
   # GET /items
   # GET /items.xml
   def index
-    render :json => Item.all
+    render :json => Item.all.as_json
     
     
     # @items = Item.all
@@ -17,7 +17,7 @@ class ItemsController < ApplicationController
   # GET /items/1.xml
   def show
 
-    render :json => Item.find(params[:id])
+    render :json => Item.find(params[:id]).to_json
 
 
     # @item = Item.find(params[:id])
