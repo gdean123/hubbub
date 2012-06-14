@@ -20,6 +20,8 @@ describe("ForestView", function() {
     
     it("should render a line between a parent and a child", function() {
       this.child_item = new this.hubbubApp.Item({"description": "my description", "parent_id": this.item.get("id")});
+      this.hubbubApp.Items.add([this.child_item]);
+          
       expect(this.view.$("svg path")).toExist();
     });
     

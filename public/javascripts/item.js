@@ -29,9 +29,12 @@ HubbubApp = (function(){
     // Reference to this collection's model.
     model: hubbubApp.Item,
     url :'/items',
+    
     initialize: function() {
       this.bind("reset", this.updateItemPositions);
+      this.bind("add", this.updateItemPositions);
     },
+    
     updateItemPositions: function() {
       // console.log(this);
       this.each(function(item) {
@@ -177,6 +180,7 @@ HubbubApp = (function(){
           output = currentItem;
         } 
       });
+
       return output;      
     },
     
@@ -279,6 +283,7 @@ HubbubApp = (function(){
     create: function(ev) {
       this.parentId = $(ev.currentTarget).attr("data-parent-id");
       this.model = new hubbubApp.Item();
+      
       this.model.set(
           {description: $("#description").val(), details: $("#details").val(), parent_id: this.parentId},
           {error: function(model, error)  {
