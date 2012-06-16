@@ -38,6 +38,7 @@ class ItemsController < ApplicationController
     if item.nil?
       item = Item.new
       item.id = params[:id]
+      item.parent_id = params[:parent_id]
       item.description = params[:description]
       item.details = params[:details]
       item.save!
