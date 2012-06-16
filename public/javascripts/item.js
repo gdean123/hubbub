@@ -173,11 +173,13 @@ HubbubApp = (function(){
       }
     },
     
+    // Find the parent of the given item
     getParent: function(item) {
       var output = null;
       hubbubApp.Items.each(function(currentItem) {
-        if(item.get("parent_id") === currentItem.get("id")){          
+        if(item.get("parent_id") === currentItem.get("id")) {
           output = currentItem;
+          console.log("Should never get here. currentItem.get(id) = " + currentItem.get("id"));
         } 
       });
 
@@ -196,9 +198,10 @@ HubbubApp = (function(){
          parentItem.get("x") !== undefined && 
          parentItem.get("y") !== undefined && 
          x !== undefined && 
-         y !== undefined){
-        // console.log("M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
+         y !== undefined) {
         this.paper.path("M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);        
+
+        console.log("Drawing a line with parent " + parentItem.get("description"));
       }
       
       //Pointer to the context of the Forest View
@@ -284,14 +287,20 @@ HubbubApp = (function(){
       this.parentId = $(ev.currentTarget).attr("data-parent-id");
       this.model = new hubbubApp.Item();
       
-      this.model.set(
-          {description: $("#description").val(), details: $("#details").val(), parent_id: this.parentId},
-          {error: function(model, error)  {
-            $('#description').qtip("show");
-          }});
+      this.model.set({
+        id: hubbubApp.Utilities.generateGuid(),
+        description: $("#description").val(),
+        details: $("#details").val(),
+        parent_id: this.parentId},
+        {error: function(model, error)  {
+          $('#description').qtip("show");
+        }});
+        
       if(this.model.isValid()) {
         hubbubApp.Items.add(this.model);
         this.model.save();
+        console.log("New model id = " + this.model.get("id"));
+        
         $('#description').qtip("hide");
         $("#dialog").dialog("close");
       }
@@ -367,6 +376,17 @@ HubbubApp = (function(){
     }
   });
 
+  hubbubApp.Utilities = {
+    
+    generateGuid: function() {
+      var S4 = function() {
+         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+      };
+      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
+    
+  }
+  
   return hubbubApp;
 
 });

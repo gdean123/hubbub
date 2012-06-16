@@ -3,40 +3,17 @@ class ItemsController < ApplicationController
   # GET /items.xml
   def index
     render :json => Item.all.as_json
-    
-    
-    # @items = Item.all
-    # 
-    # respond_to do |format|
-    #   format.html # index.html.erb
-    #   format.xml  { render :xml => @items }
-    # end
   end
 
   # GET /items/1
   # GET /items/1.xml
   def show
-
     render :json => Item.find(params[:id]).to_json
-
-
-    # @item = Item.find(params[:id])
-    # 
-    # respond_to do |format|
-    #   format.html # show.html.erb
-    #   format.xml  { render :xml => @item }
-    # end
   end
 
   # GET /items/new
   # GET /items/new.xml
   def new
-    # @item = Item.new
-    # 
-    # respond_to do |format|
-    #   format.html # new.html.erb
-    #   format.xml  { render :xml => @item }
-    # end
   end
 
   # GET /items/1/edit
@@ -48,45 +25,29 @@ class ItemsController < ApplicationController
   # POST /items.xml
   def create
     item = Item.create! params
-    puts item.parent_id
     
     render :json => item
-    
-    
-    # @item = Item.new(params[:item])
-    # 
-    # respond_to do |format|
-    #   if @item.save
-    #     format.html { redirect_to(@item, :notice => 'Item was successfully created.') }
-    #     format.xml  { render :xml => @item, :status => :created, :location => @item }
-    #   else
-    #     format.html { render :action => "new" }
-    #     format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-    #   end
-    # end
   end
 
   # PUT /items/1
   # PUT /items/1.xml
   def update
-    item = Item.find(params[:id])
+    item = Item.find_by_id(params[:id])
+    
+    # Create a new item if we were not able to find an item with the given id
+    if item.nil?
+      item = Item.new
+      item.id = params[:id]
+      item.description = params[:description]
+      item.details = params[:details]
+      item.save!
 
-    item.update_attributes! params
-    
+    # If the item already existed, just update it's attributes
+    else
+      item.update_attributes! params    
+    end
+        
     render :json => item
-    
-    
-    # @item = Item.find(params[:id])
-    # 
-    # respond_to do |format|
-    #   if @item.update_attributes(params[:item])
-    #     format.html { redirect_to(@item, :notice => 'Item was successfully updated.') }
-    #     format.xml  { head :ok }
-    #   else
-    #     format.html { render :action => "edit" }
-    #     format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-    #   end
-    # end
   end
 
   # DELETE /items/1

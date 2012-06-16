@@ -1,4 +1,5 @@
 class Item < ActiveRecord::Base
+  set_primary_key :id
   has_ancestry
   attr_accessible :description, :details, :parent_id
 
