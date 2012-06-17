@@ -1,15 +1,7 @@
 Welcome!
 ========
 
-This is the README for hubbub: the collaborative, hierarchical task manager.
-
-Build status
-============
-
-![Build Status](https://secure.travis-ci.org/gdean123/hubbub.png)
-
-Links
-=====
+This is the readme for Hubbub: the collaborative, hierarchical task manager. Hubbub organizes your to do list into a tree structure, and allows subtrees to be shared with other users. ![Build Status](https://secure.travis-ci.org/gdean123/hubbub.png)
 
 [Deployed application](http://hubbub-dev.heroku.com/) |
 [Build server](http://travis-ci.org/#!/gdean123/hubbub) |

@@ -2,7 +2,12 @@ describe("Item", function() {
   var hubbubApp;
   beforeEach(function(){
     hubbubApp = HubbubApp();
-	  this.item = new hubbubApp.Item({"description": "test", "parent_id": null, "id": 23});
+	  this.item = new hubbubApp.Item({
+      "description": "test",
+      "parent_id": null,
+      "id": 23
+    });
+
 	  this.item.url = "/";
   });
 
@@ -17,7 +22,11 @@ describe("Item", function() {
   
   describe("child", function(){
     it("should belong to a parent", function() {      
-      this.child_item = new hubbubApp.Item({"description": "child", "parent_id": this.item.get("id")});
+      this.child_item = new hubbubApp.Item({
+        "description": "child",
+        "parent_id": this.item.get("id")
+      });
+
       this.child_item.url = "/";
       expect(this.child_item.get("parent_id")).toBe(23);
     });

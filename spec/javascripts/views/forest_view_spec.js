@@ -4,11 +4,13 @@ describe("ForestView", function() {
     loadFixtures("_main-template.html");
     
     this.hubbubApp = HubbubApp();
-
     this.appView = new this.hubbubApp.AppView();
-    this.item = new this.hubbubApp.Item({"description": "my description", "id": 23});
-    this.hubbubApp.Items.add([this.item]);
+    this.item = new this.hubbubApp.Item({
+      "description": "my description",
+      "id": 23
+    });
 
+    this.hubbubApp.Items.add([this.item]);
     this.view = this.appView.forestView;
     this.view.render();
   });
@@ -19,9 +21,12 @@ describe("ForestView", function() {
     });
     
     it("should render a line between a parent and a child", function() {
-      this.child_item = new this.hubbubApp.Item({"description": "my description", "parent_id": this.item.get("id")});
+      this.child_item = new this.hubbubApp.Item({
+        "description": "my description",
+        "parent_id": this.item.get("id")
+      });
+
       this.hubbubApp.Items.add([this.child_item]);
-          
       expect(this.view.$("svg path")).toExist();
     });
     

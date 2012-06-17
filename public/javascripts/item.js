@@ -6,11 +6,9 @@ HubbubApp = (function(){
     interpolate : /\{\{(.+?)\}\}/g
   };
 
-  /* ******************************************
-  *  Item Model
-  *
-  *  Our basic **Item** model has `description`, and `details` attributes.
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  Item Model - the model for a single item.                              */
+  /* *********************************************************************** */
   hubbubApp.Item = Backbone.Model.extend({
 
     validate: function(attrs) {
@@ -20,11 +18,9 @@ HubbubApp = (function(){
     }
   });
 
-  /* ******************************************
-  *  Item Collection
-  *
-  *  The collection of Items is backed by postrgresql.
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  Item Collection -- the complete set of items.                          */
+  /* *********************************************************************** */
   hubbubApp.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: hubbubApp.Item,
@@ -54,11 +50,9 @@ HubbubApp = (function(){
   // Create our collection of **Items**.
   hubbubApp.Items = new hubbubApp.ItemList();
 
-  /* ******************************************
-  *  HoverMenuView
-  *
-  *  The DOM element for an item's hover menu.
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  Hover Menu View -- the menu shown when hovering over an item.          */
+  /* *********************************************************************** */
   hubbubApp.HoverMenuView = Backbone.View.extend({
 
     // Cache the template function.
@@ -85,11 +79,9 @@ HubbubApp = (function(){
     }
   });
 
-  /* ******************************************
-  *  ForestView
-  *
-  *  The DOM element for an item...
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  Forest View -- the entire canvas area created by Raphael.              */
+  /* *********************************************************************** */
   hubbubApp.ForestView = Backbone.View.extend({
 
     el: '#forest',
@@ -179,7 +171,6 @@ HubbubApp = (function(){
       hubbubApp.Items.each(function(currentItem) {
         if(item.get("parent_id") === currentItem.get("id")) {
           output = currentItem;
-          console.log("Should never get here. currentItem.get(id) = " + currentItem.get("id"));
         } 
       });
 
@@ -197,11 +188,11 @@ HubbubApp = (function(){
       if(parentItem !== null && 
          parentItem.get("x") !== undefined && 
          parentItem.get("y") !== undefined && 
-         x !== undefined && 
-         y !== undefined) {
-        this.paper.path("M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);        
+         x !== undefined && y !== undefined) {
 
-        console.log("Drawing a line with parent " + parentItem.get("description"));
+        // Draw a line from the parent to the child
+        this.paper.path(
+          "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
       }
       
       //Pointer to the context of the Forest View
@@ -227,7 +218,6 @@ HubbubApp = (function(){
         });
 
         // Append it to the DOM
-        //console.log($(that.el).last());
         $(that.el).last().append($(hoverMenuView.render().el));
       });
     },
@@ -238,9 +228,9 @@ HubbubApp = (function(){
     }
   });
 
-  /* ******************************************
-  *  Dialog to create a new item
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  Add Item View -- the dialog to create an item.                         */
+  /* *********************************************************************** */
   hubbubApp.AddItemView = Backbone.View.extend({
 
     el: $("#dialog").parent(),
@@ -256,14 +246,10 @@ HubbubApp = (function(){
       $("#dialog").dialog({ autoOpen: false });
     },
 
-    // check to see if there is anything in the text field
+    // Check to see if there is anything in the text field
     checkText: function() {
       $('#description').qtip("hide");
       $('#details').qtip("hide");
-    },
-
-    triggerCreate: function() {
-      
     },
 
     show: function(parentId) {
@@ -299,19 +285,16 @@ HubbubApp = (function(){
       if(this.model.isValid()) {
         hubbubApp.Items.add(this.model);
         this.model.save();
-        console.log("New model id = " + this.model.get("id"));
-        
+
         $('#description').qtip("hide");
         $("#dialog").dialog("close");
       }
     }
   });
 
-  /* ******************************************
-  *  The Application
-  *
-  *  Our overall **AppView** is the top-level piece of UI.
-  * ******************************************/
+  /* *********************************************************************** */
+  /*  App View -- the top-level piece of the user interface.                 */
+  /* *********************************************************************** */
   hubbubApp.AppView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
@@ -325,43 +308,24 @@ HubbubApp = (function(){
 
     // At initialization we bind to the relevant events on the `Items`
     // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved in *postgresql*.
+    // loading any preexisting items that might be saved in *postgresql*.
     initialize: function() {
       this.description    = this.$("#description");
       this.details        = this.$("#details");
       
       // Create all subviews
       this.addItemView = new hubbubApp.AddItemView();
-      this.forestView = new hubbubApp.ForestView({showAddItemDialog: this.addItemView.show});
+      this.forestView =
+        new hubbubApp.ForestView({showAddItemDialog: this.addItemView.show});
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
-    },
-
-    // Re-rendering the App just means refreshing the statistics -- the rest
-    // of the app doesn't change.
-    render: function() {
     },
 
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     showAddItemDialog: function() {
       this.addItemView.show(null);
-    },
-
-    // To be deleted?
-    showHover: function (ev) {
-      var target = ev.currentTarget;
-      var self = this;
-      
-      $(target).children(".hover_menu").show();
-    },
-    
-    hideHover: function (ev) {
-      var target = ev.currentTarget;
-      var self = this;
-
-      $(target).children(".hover_menu").hide(); 
     },
 
     // If you hit return in the main input field, and there is text to save,
@@ -376,15 +340,18 @@ HubbubApp = (function(){
     }
   });
 
+  /* *********************************************************************** */
+  /*  Utilities -- a collection of application-wide utility functions.       */
+  /* *********************************************************************** */
   hubbubApp.Utilities = {
-    
+
+    // Generate a new globally unique identifier
     generateGuid: function() {
       var S4 = function() {
          return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
       };
       return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     }
-    
   };
   
   return hubbubApp;
