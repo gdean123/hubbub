@@ -169,13 +169,11 @@ HubbubApp = (function(){
     },
     
     addOne: function(item) {  
-      var x = item.get("x"), y = item.get("y");    
-
+      var x = item.get("x"), y = item.get("y");
       var parentItem = this.getParent(item);
 
       // hook up if not null
       if(parentItem !== null) {
-
         // Draw a line from the parent to the child
         var line = this.paper.path(
           "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
@@ -188,9 +186,9 @@ HubbubApp = (function(){
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
 
-      
       var glyphWidth = glyph.getBBox().width + 15;
-      var glyphHeight = glyph.getBBox().height + 15
+      var glyphHeight = glyph.getBBox().height + 15;
+
       // Create rectangle for visual effect
       var rect = this.paper.rect(x-(glyphWidth/2), y-(glyphHeight/2), glyphWidth, glyphHeight);
       rect.attr("r", "10");
@@ -200,10 +198,8 @@ HubbubApp = (function(){
       
       glyph.toFront();
       
-      
       //Pointer to the context of the Forest View
-      var that = this;   
-
+      var that = this;
       glyph.mouseover(function(){
         
         // Store the current glyph so that we can destroy the hover menu later
@@ -230,7 +226,6 @@ HubbubApp = (function(){
     
     render: function() {
       this.paper.clear();
-      // console.log(hubbubApp.Items);
       hubbubApp.Items.each(this.addOne, this);
     }
   });
