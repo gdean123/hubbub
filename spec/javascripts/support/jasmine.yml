@@ -19,6 +19,7 @@ src_files:
   - public/javascripts/underscore-min.js
   - public/javascripts/backbone-min.js
   - public/javascripts/jquery_ujs.js
+  - public/javascripts/arbor.js
   - public/javascripts/item.js
   - public/javascripts/hubbub.js
   - spec/javascripts/vendor/sinon.js

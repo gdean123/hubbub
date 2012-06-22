@@ -85,8 +85,13 @@ HubbubApp = (function(){
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
+      this.particleSystem = arbor.ParticleSystem();
+      this.particleSystem.renderer = this;
     },
-
+    
+    init:this.render, // Call the render function when the view is initialized
+    redraw:this.render, // Call the render funtion when redraw occurs
+    
     // Find the bounding box of the current hover menu
     getHoverBox: function() {
       if(this.currentGlyph) {
@@ -168,8 +173,9 @@ HubbubApp = (function(){
       return output;      
     },
     
-    addOne: function(item) {  
+    renderItem: function(item) {  
       var x = item.get("x"), y = item.get("y");
+      this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
       var parentItem = this.getParent(item);
 
       // hook up if not null
@@ -226,7 +232,7 @@ HubbubApp = (function(){
     
     render: function() {
       this.paper.clear();
-      hubbubApp.Items.each(this.addOne, this);
+      hubbubApp.Items.each(this.renderItem, this);
     }
   });
 
