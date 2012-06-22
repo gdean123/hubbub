@@ -24,7 +24,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'jasmine'
   gem 'capybara'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '2.5.0'
   gem 'database_cleaner'
 
   gem 'jslint_on_rails'
