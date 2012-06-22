@@ -11,10 +11,21 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.Item = Backbone.Model.extend({
 
+    initialize: function() {
+      this.setItemPosition();
+    },
+    
     validate: function(attrs) {
       if (!attrs.description || $.trim(attrs.description) === "") {
         return "Enter description";
       }
+    },
+    
+    setItemPosition: function() {
+      this.set({
+        x: Math.floor(Math.random()*600),
+        y: Math.floor(Math.random()*342)}, 
+        {silent: true});
     }
   });
 
@@ -24,27 +35,7 @@ HubbubApp = (function(){
   hubbubApp.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: hubbubApp.Item,
-    url :'/items',
-    
-    initialize: function() {
-      this.bind("reset", this.updateItemPositions);
-      this.bind("add", this.updateItemPositions);
-    },
-    
-    updateItemPositions: function() {
-      // console.log(this);
-      this.each(function(item) {
-        // var x = Math.floor(Math.random()*this.$el.width() * 0.9),
-        //     y = Math.floor(Math.random()*this.$el.height() * 0.7);
-        
-        // TODO - change out the hardcoded values
-        var x = Math.floor(Math.random()*600),
-            y = Math.floor(Math.random()*400);
-        
-        item.set({x: x});
-        item.set({y: y});
-      });
-    }    
+    url :'/items'    
   });
 
   // Create our collection of **Items**.
@@ -179,21 +170,36 @@ HubbubApp = (function(){
     
     addOne: function(item) {  
       var x = item.get("x"), y = item.get("y");    
+
+      var parentItem = this.getParent(item);
+
+      // hook up if not null
+      if(parentItem !== null) {
+
+        // Draw a line from the parent to the child
+        var line = this.paper.path(
+          "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
+          line.attr("stroke-width", "2");
+          line.attr("stroke", "#626CF7");
+        line.toBack();  
+      }
+
+      // Set the text
       var glyph = this.paper.text(x, y, item.get("description"));
       glyph.attr("font-size", 32);
 
-      var parentItem = this.getParent(item);
       
-      // hook up if not null
-      if(parentItem !== null && 
-         parentItem.get("x") !== undefined && 
-         parentItem.get("y") !== undefined && 
-         x !== undefined && y !== undefined) {
-
-        // Draw a line from the parent to the child
-        this.paper.path(
-          "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
-      }
+      var glyphWidth = glyph.getBBox().width + 15;
+      var glyphHeight = glyph.getBBox().height + 15
+      // Create rectangle for visual effect
+      var rect = this.paper.rect(x-(glyphWidth/2), y-(glyphHeight/2), glyphWidth, glyphHeight);
+      rect.attr("r", "10");
+      rect.attr("stroke-width", "2");
+      rect.attr("stroke", "#626CF7");
+      rect.attr("fill", "#CDD1FC");
+      
+      glyph.toFront();
+      
       
       //Pointer to the context of the Forest View
       var that = this;   
@@ -224,6 +230,7 @@ HubbubApp = (function(){
     
     render: function() {
       this.paper.clear();
+      // console.log(hubbubApp.Items);
       hubbubApp.Items.each(this.addOne, this);
     }
   });
@@ -272,7 +279,6 @@ HubbubApp = (function(){
     create: function(ev) {
       this.parentId = $(ev.currentTarget).attr("data-parent-id");
       this.model = new hubbubApp.Item();
-      
       this.model.set({
         id: hubbubApp.Utilities.generateGuid(),
         description: $("#description").val(),
