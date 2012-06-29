@@ -12,7 +12,8 @@ HubbubApp = (function(){
   hubbubApp.Item = Backbone.Model.extend({
 
     initialize: function() {
-      this.setItemPosition();
+      this.generateRandomPosition();
+      this.glyphs = { "line":null, "text":null, "rect":null };
     },
     
     validate: function(attrs) {
@@ -21,7 +22,13 @@ HubbubApp = (function(){
       }
     },
     
-    setItemPosition: function() {
+    move: function(x,y) {
+      this.set({"x": x, "y": y}, {silent: true});
+      this.glyphs.text.attr("x", x);
+      this.glyphs.text.attr("y", y);
+    },
+    
+    generateRandomPosition: function() {
       this.set({
         x: Math.floor(Math.random()*600),
         y: Math.floor(Math.random()*342)}, 
@@ -86,15 +93,12 @@ HubbubApp = (function(){
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
       this.particleSystem = arbor.ParticleSystem();
-      this.particleSystem.renderer = this;
+      this.particleSystem.renderer = hubbubApp.Renderer(this.el);
     },
-    
-    init:this.render, // Call the render function when the view is initialized
-    redraw:this.render, // Call the render funtion when redraw occurs
-    
+        
     // Find the bounding box of the current hover menu
     getHoverBox: function() {
-      if(this.currentGlyph) {
+      if(this.currentText) {
         var hoverWidth = $(".hover_menu").width();
         var hoverHeight = $(".hover_menu").height();
         var hoverLeft = $(".hover_menu").position().left;
@@ -111,10 +115,10 @@ HubbubApp = (function(){
     },
 
     // Find the minimal bounding box that contains the both the hover menu
-    // and the current item glyph
+    // and the current item text
     getBoundingBox: function() {
       var hoverBox = this.getHoverBox();         // Hover menu bounding box
-      var itemBox = this.currentGlyph.getBBox(); // Item's bounding box
+      var itemBox = this.currentText.getBBox(); // Item's bounding box
       
       // TODO We need to address why this needs a +86 on the y value
       return {top:    Math.min(hoverBox.top,    itemBox.y+86), // y  = top
@@ -142,7 +146,7 @@ HubbubApp = (function(){
     },
 
     refreshHoverMenu: function(e) {
-      if(this.currentGlyph) {  
+      if(this.currentText) {  
         var paddedBoundingBox = this.getPaddedBoundingBox();
         var cursor = {
           x: e.pageX-20,
@@ -155,8 +159,8 @@ HubbubApp = (function(){
           // Destroy the hover menu
           $(".hover_menu").parent().empty().remove();
 
-          // There is no longer a current glyph
-          this.currentGlyph = null;
+          // There is no longer a current text
+          this.currentText = null;
         }
       }
     },
@@ -175,11 +179,21 @@ HubbubApp = (function(){
     
     renderItem: function(item) {  
       var x = item.get("x"), y = item.get("y");
-      this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
+      // var t = this.particleSystem.addNode(item.get("id"));
+      var t = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
+      // item.set({"node": t});
+      // console.log(item.get("node").p.x);
+      // console.log(item);
+      // console.log(t);
+      // console.log(t.p.x, t.p.y);
+      // console.log(x);
+      // console.log(y);
       var parentItem = this.getParent(item);
 
       // hook up if not null
       if(parentItem !== null) {
+        var u = this.particleSystem.addEdge(parentItem.get("id"), item.get("id"), {length:.75});
+        // console.log(this.particleSystem);
         // Draw a line from the parent to the child
         var line = this.paper.path(
           "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
@@ -189,27 +203,29 @@ HubbubApp = (function(){
       }
 
       // Set the text
-      var glyph = this.paper.text(x, y, item.get("description"));
-      glyph.attr("font-size", 32);
+      var text = this.paper.text(x, y, item.get("description"));
+      text.attr("font-size", 32);
 
-      var glyphWidth = glyph.getBBox().width + 15;
-      var glyphHeight = glyph.getBBox().height + 15;
+      var textWidth = text.getBBox().width + 15;
+      var textHeight = text.getBBox().height + 15;
 
       // Create rectangle for visual effect
-      var rect = this.paper.rect(x-(glyphWidth/2), y-(glyphHeight/2), glyphWidth, glyphHeight);
+      var rect = this.paper.rect(x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
       rect.attr("r", "10");
       rect.attr("stroke-width", "2");
       rect.attr("stroke", "#626CF7");
       rect.attr("fill", "#CDD1FC");
       
-      glyph.toFront();
+      text.toFront();
+      
+      item.set({"glyphs": {"line": line, "rect": rect, "text":text}}, {silent:true});
       
       //Pointer to the context of the Forest View
       var that = this;
-      glyph.mouseover(function(){
+      text.mouseover(function(){
         
-        // Store the current glyph so that we can destroy the hover menu later
-        that.currentGlyph = this;
+        // Store the current text so that we can destroy the hover menu later
+        that.currentText = this;
         
         // Clean up any open hover menus
         try {          
@@ -235,6 +251,66 @@ HubbubApp = (function(){
       hubbubApp.Items.each(this.renderItem, this);
     }
   });
+
+  /* *********************************************************************** */
+  /*  Renderer -- render all the arbor.js nodes                              */
+  /* *********************************************************************** */
+  hubbubApp.Renderer = function(paper) {
+    var paper = $(paper).get(0);
+    // var ctx = canvas.getContext("2d");
+    var particleSystem;
+    
+    var renderer = {};
+
+    renderer.init = function(system){
+      //
+      // the particle system will call the init function once, right before the
+      // first frame is to be drawn. it's a good place to set up the canvas and
+      // to pass the canvas size to the particle system
+      //
+      // save a reference to the particle system for use in the .redraw() loop
+      
+      particleSystem = system;
+
+      // inform the system of the screen dimensions so it can map coords for us.
+      // if the canvas is ever resized, screenSize should be called again with
+      // the new dimensions
+      particleSystem.screenSize(canvas.width, canvas.height);
+      particleSystem.screenPadding(80); // leave an extra 80px of whitespace per side
+    };
+  
+    renderer.redraw = function(){
+      // 
+      // redraw will be called repeatedly during the run whenever the node positions
+      // change. the new positions for the nodes can be accessed by looking at the
+      // .p attribute of a given node. however the p.x & p.y values are in the coordinates
+      // of the particle system rather than the screen. you can either map them to
+      // the screen yourself, or use the convenience iterators .eachNode (and .eachEdge)
+      // which allow you to step through the actual node objects but also pass an
+      // x,y point in the screen's coordinate system
+      // 
+      
+
+      
+      // particleSystem.eachEdge(function(edge, pt1, pt2){
+      //   // edge: {source:Node, target:Node, length:#, data:{}}
+      //   // pt1:  {x:#, y:#}  source position in screen coords
+      //   // pt2:  {x:#, y:#}  target position in screen coords
+      //   
+      //   // draw a line from pt1 to pt2
+      //   
+      // })
+      //   
+      // particleSystem.eachNode(function(node, pt){
+      //   // node: {mass:#, p:{x,y}, name:"", data:{}}
+      //   // pt:   {x:#, y:#}  node position in screen coords
+      //   
+      //   // change the node's text position to pt
+      //   
+      // })         
+    }; 
+    return renderer;
+  };
 
   /* *********************************************************************** */
   /*  Add Item View -- the dialog to create an item.                         */
