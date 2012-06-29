@@ -7,7 +7,7 @@ describe("ForestView", function() {
     this.appView = new this.hubbubApp.AppView();
     this.item = new this.hubbubApp.Item({
       "description": "my description",
-      "id": 23
+      "id": "4ff2a9c7-d32c-4bc4-94f4-6a6a6b54c91e"
     });
 
     this.hubbubApp.Items.add([this.item]);
@@ -23,6 +23,7 @@ describe("ForestView", function() {
     it("should render a line between a parent and a child", function() {
       this.child_item = new this.hubbubApp.Item({
         "description": "my description",
+        "id": "f7eb7fbe-a250-45dd-8a3d-7d154512e340",
         "parent_id": this.item.get("id")
       });
 
