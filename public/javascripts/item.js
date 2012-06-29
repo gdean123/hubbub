@@ -93,7 +93,7 @@ HubbubApp = (function(){
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
       this.particleSystem = arbor.ParticleSystem();
-      this.particleSystem.renderer = hubbubApp.Renderer(this.el);
+      this.particleSystem.renderer = hubbubApp.Renderer(this.$el);
     },
         
     // Find the bounding box of the current hover menu
@@ -191,11 +191,14 @@ HubbubApp = (function(){
       var parentItem = this.getParent(item);
 
       // hook up if not null
+      var line = null;
       if(parentItem !== null) {
-        var u = this.particleSystem.addEdge(parentItem.get("id"), item.get("id"), {length:.75});
+        var u = this.particleSystem.addEdge(
+          parentItem.get("id"), item.get("id"), {length:0.75});
+
         // console.log(this.particleSystem);
         // Draw a line from the parent to the child
-        var line = this.paper.path(
+        line = this.paper.path(
           "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
           line.attr("stroke-width", "2");
           line.attr("stroke", "#626CF7");
@@ -218,7 +221,9 @@ HubbubApp = (function(){
       
       text.toFront();
       
-      item.set({"glyphs": {"line": line, "rect": rect, "text":text}}, {silent:true});
+      item.set(
+        {"glyphs": {"line": line, "rect": rect, "text":text}},
+        {silent:true});
       
       //Pointer to the context of the Forest View
       var that = this;
@@ -256,14 +261,12 @@ HubbubApp = (function(){
   /*  Renderer -- render all the arbor.js nodes                              */
   /* *********************************************************************** */
   hubbubApp.Renderer = function(paper) {
-    var paper = $(paper).get(0);
     // var ctx = canvas.getContext("2d");
     var particleSystem;
     
     var renderer = {};
 
     renderer.init = function(system){
-      //
       // the particle system will call the init function once, right before the
       // first frame is to be drawn. it's a good place to set up the canvas and
       // to pass the canvas size to the particle system
