@@ -178,10 +178,6 @@ HubbubApp = (function(){
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
-
-      // Build a particle system and set its renderer
-      this.particleSystem = arbor.ParticleSystem();
-      this.particleSystem.renderer = hubbubApp.Renderer(this.$el);
     },
         
     // Find the bounding box of the current hover menu
@@ -267,24 +263,16 @@ HubbubApp = (function(){
     
     renderItem: function(item) {  
       var x = item.get("x"), y = item.get("y");
-      // var t = this.particleSystem.addNode(item.get("id"));
-      var t = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
-      // item.set({"node": t});
-      // console.log(item.get("node").p.x);
-      // console.log(item);
-      // console.log(t);
-      // console.log(t.p.x, t.p.y);
-      // console.log(x);
-      // console.log(y);
+      //var t = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
+
       var parentItem = this.getParent(item);
 
       // hook up if not null
       var line = null;
       if(parentItem !== null) {
-        var u = this.particleSystem.addEdge(
-          parentItem.get("id"), item.get("id"), {length:0.75});
+//        var u = this.particleSystem.addEdge(
+//          parentItem.get("id"), item.get("id"), {length:0.75});
 
-        // console.log(this.particleSystem);
         // Draw a line from the parent to the child
         line = this.paper.path(
           "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
@@ -455,29 +443,10 @@ HubbubApp = (function(){
   /*  --- Other Objects ---------------------------------------------------- */
 
   /* *********************************************************************** */
-  /*  LayoutManager - Compute the position of objects over time.             */
-  /* *********************************************************************** */
-  hubbubApp.LayoutManager = function() {
-
-    // Create a new layoutManager to populate and return
-    var layoutManager = {};
-
-    // Build a particle system and set its renderer
-//    layoutManager.particleSystem = arbor.ParticleSystem();
-//    layoutManager.particleSystem.renderer = hubbubApp.Renderer(this.$el);
-
-    // Return the newly created layoutManager
-    return layoutManager;
-  };
-
-  // Construct a new layout manager at the top level
-  hubbubApp.LayoutListener = new hubbubApp.LayoutManager();
-
-  /* *********************************************************************** */
   /*  Renderer -- render all the arbor.js nodes                              */
   /* *********************************************************************** */
-  hubbubApp.Renderer = function(paper) {
-    // var ctx = canvas.getContext("2d");
+  hubbubApp.Renderer = function() {
+    var paper = $('#forest');
     var particleSystem;
 
     var renderer = {};
@@ -530,6 +499,25 @@ HubbubApp = (function(){
     };
     return renderer;
   };
+
+  /* *********************************************************************** */
+  /*  LayoutManager - Compute the position of objects over time.             */
+  /* *********************************************************************** */
+  hubbubApp.LayoutManager = function() {
+
+    // Create a new layoutManager to populate and return
+    var layoutManager = {};
+
+    // Build a particle system and set its renderer
+    this.particleSystem = arbor.ParticleSystem();
+    this.particleSystem.renderer = hubbubApp.Renderer();
+
+    // Return the newly created layoutManager
+    return layoutManager;
+  };
+
+  // Construct a new layout manager at the top level
+  hubbubApp.LayoutListener = new hubbubApp.LayoutManager();
 
   /* *********************************************************************** */
   /*  Utilities -- a collection of application-wide utility functions.       */
