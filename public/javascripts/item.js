@@ -6,6 +6,8 @@ HubbubApp = (function(){
     interpolate : /\{\{(.+?)\}\}/g
   };
 
+  /*  --- Models ----------------------------------------------------------- */
+
   /* *********************************************************************** */
   /*  Item Model - the model for a single item.                              */
   /* *********************************************************************** */
@@ -37,6 +39,53 @@ HubbubApp = (function(){
   });
 
   /* *********************************************************************** */
+  /*  GraphNode Model - wrapper around an Arbor.js node.                     */
+  /* *********************************************************************** */
+  hubbubApp.GraphNode = Backbone.Model.extend({
+
+    initialize: function() {
+      this.set("arborNode", this.options.arborNode);
+    }
+
+  });
+
+  /* *********************************************************************** */
+  /*  GraphEdge Model - wrapper around an Arbor.js edge.                     */
+  /* *********************************************************************** */
+  hubbubApp.GraphEdge = Backbone.Model.extend({
+
+    initialize: function() {
+      this.set("arborEdge", this.options.arborEdge);
+    }
+
+  });
+
+  /* *********************************************************************** */
+  /*  GlyphNode Model - wrapper around a Raphael.js text/rectangle.          */
+  /* *********************************************************************** */
+  hubbubApp.GlyphNode = Backbone.Model.extend({
+
+    initialize: function() {
+      this.set("text", this.options.text);
+      this.set("rect", this.options.rect);
+    }
+
+  });
+
+  /* *********************************************************************** */
+  /*  GlyphEdge Model - wrapper around a Raphael.js line.                    */
+  /* *********************************************************************** */
+  hubbubApp.GlyphEdge = Backbone.Model.extend({
+
+    initialize: function() {
+      this.set("line", this.options.line);
+    }
+
+  });
+
+  /*  --- Collections ------------------------------------------------------ */
+
+  /* *********************************************************************** */
   /*  Item Collection -- the complete set of items.                          */
   /* *********************************************************************** */
   hubbubApp.ItemList = Backbone.Collection.extend({
@@ -45,8 +94,48 @@ HubbubApp = (function(){
     url :'/items'    
   });
 
-  // Create our collection of **Items**.
+  /* *********************************************************************** */
+  /*  GraphNode Collection - the set of Arbor.js nodes.                      */
+  /* *********************************************************************** */
+  hubbubApp.GraphNodeList = Backbone.Collection.extend({
+    // Reference to this collection's model.
+    model: hubbubApp.GraphNode
+  });
+
+  /* *********************************************************************** */
+  /*  GraphEdge Collection - the set of Arbor.js edges.                      */
+  /* *********************************************************************** */
+  hubbubApp.GraphEdgeList = Backbone.Collection.extend({
+    // Reference to this collection's model.
+    model: hubbubApp.GraphEdge
+  });
+
+  /* *********************************************************************** */
+  /*  GlyphNode Collection - the set of Raphael.js node glyphs.              */
+  /* *********************************************************************** */
+  hubbubApp.GlyphNodeList = Backbone.Collection.extend({
+    // Reference to this collection's model.
+    model: hubbubApp.GlyphNode
+  });
+
+  /* *********************************************************************** */
+  /*  GlyphEdges Collection - the set of Raphael.js edge glyphs.             */
+  /* *********************************************************************** */
+  hubbubApp.GlyphEdgeList = Backbone.Collection.extend({
+    // Reference to this collection's model.
+    model: hubbubApp.GlyphEdge
+  });
+
+  // Instantiate our collections
   hubbubApp.Items = new hubbubApp.ItemList();
+
+  hubbubApp.GraphNodes = new hubbubApp.GraphNodeList();
+  hubbubApp.GraphEdges = new hubbubApp.GraphEdgeList();
+
+  hubbubApp.GlyphNodes = new hubbubApp.GlyphNodeList();
+  hubbubApp.GlyphEdges = new hubbubApp.GlyphEdgeList();
+
+  /*  --- Views ------------------------------------------------------------ */
 
   /* *********************************************************************** */
   /*  Hover Menu View -- the menu shown when hovering over an item.          */
@@ -92,8 +181,6 @@ HubbubApp = (function(){
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
-      this.particleSystem = arbor.ParticleSystem();
-      this.particleSystem.renderer = hubbubApp.Renderer(this.$el);
     },
         
     // Find the bounding box of the current hover menu
@@ -258,64 +345,6 @@ HubbubApp = (function(){
   });
 
   /* *********************************************************************** */
-  /*  Renderer -- render all the arbor.js nodes                              */
-  /* *********************************************************************** */
-  hubbubApp.Renderer = function(paper) {
-    // var ctx = canvas.getContext("2d");
-    var particleSystem;
-    
-    var renderer = {};
-
-    renderer.init = function(system){
-      // the particle system will call the init function once, right before the
-      // first frame is to be drawn. it's a good place to set up the canvas and
-      // to pass the canvas size to the particle system
-      //
-      // save a reference to the particle system for use in the .redraw() loop
-      
-      particleSystem = system;
-
-      // inform the system of the screen dimensions so it can map coords for us.
-      // if the canvas is ever resized, screenSize should be called again with
-      // the new dimensions
-      particleSystem.screenSize(canvas.width, canvas.height);
-      particleSystem.screenPadding(80); // leave an extra 80px of whitespace per side
-    };
-  
-    renderer.redraw = function(){
-      // 
-      // redraw will be called repeatedly during the run whenever the node positions
-      // change. the new positions for the nodes can be accessed by looking at the
-      // .p attribute of a given node. however the p.x & p.y values are in the coordinates
-      // of the particle system rather than the screen. you can either map them to
-      // the screen yourself, or use the convenience iterators .eachNode (and .eachEdge)
-      // which allow you to step through the actual node objects but also pass an
-      // x,y point in the screen's coordinate system
-      // 
-      
-
-      
-      // particleSystem.eachEdge(function(edge, pt1, pt2){
-      //   // edge: {source:Node, target:Node, length:#, data:{}}
-      //   // pt1:  {x:#, y:#}  source position in screen coords
-      //   // pt2:  {x:#, y:#}  target position in screen coords
-      //   
-      //   // draw a line from pt1 to pt2
-      //   
-      // })
-      //   
-      // particleSystem.eachNode(function(node, pt){
-      //   // node: {mass:#, p:{x,y}, name:"", data:{}}
-      //   // pt:   {x:#, y:#}  node position in screen coords
-      //   
-      //   // change the node's text position to pt
-      //   
-      // })         
-    }; 
-    return renderer;
-  };
-
-  /* *********************************************************************** */
   /*  Add Item View -- the dialog to create an item.                         */
   /* *********************************************************************** */
   hubbubApp.AddItemView = Backbone.View.extend({
@@ -425,6 +454,85 @@ HubbubApp = (function(){
       this.details.val('');
     }
   });
+
+  /*  --- Other Objects ---------------------------------------------------- */
+
+  /* *********************************************************************** */
+  /*  LayoutManager - Compute the position of objects over time.             */
+  /* *********************************************************************** */
+  hubbubApp.LayoutManager = function() {
+
+    // Create a new layoutManager to populate and return
+    var layoutManager = {};
+
+    // Build a particle system and set its renderer
+    layoutManager.particleSystem = arbor.ParticleSystem();
+    layoutManager.particleSystem.renderer = hubbubApp.Renderer(this.$el);
+
+    // Return the newly created layoutManager
+    return layoutManager;
+  };
+
+  // Construct a new layout manager at the top level
+  hubbubApp.LayoutListener = new hubbubApp.LayoutManager();
+
+  /* *********************************************************************** */
+  /*  Renderer -- render all the arbor.js nodes                              */
+  /* *********************************************************************** */
+  hubbubApp.Renderer = function(paper) {
+    // var ctx = canvas.getContext("2d");
+    var particleSystem;
+
+    var renderer = {};
+
+    renderer.init = function(system){
+      // the particle system will call the init function once, right before the
+      // first frame is to be drawn. it's a good place to set up the canvas and
+      // to pass the canvas size to the particle system
+      //
+      // save a reference to the particle system for use in the .redraw() loop
+
+      particleSystem = system;
+
+      // inform the system of the screen dimensions so it can map coords for us.
+      // if the canvas is ever resized, screenSize should be called again with
+      // the new dimensions
+      particleSystem.screenSize(canvas.width, canvas.height);
+      particleSystem.screenPadding(80); // leave an extra 80px of whitespace per side
+    };
+
+    renderer.redraw = function(){
+      //
+      // redraw will be called repeatedly during the run whenever the node positions
+      // change. the new positions for the nodes can be accessed by looking at the
+      // .p attribute of a given node. however the p.x & p.y values are in the coordinates
+      // of the particle system rather than the screen. you can either map them to
+      // the screen yourself, or use the convenience iterators .eachNode (and .eachEdge)
+      // which allow you to step through the actual node objects but also pass an
+      // x,y point in the screen's coordinate system
+      //
+
+
+
+      // particleSystem.eachEdge(function(edge, pt1, pt2){
+      //   // edge: {source:Node, target:Node, length:#, data:{}}
+      //   // pt1:  {x:#, y:#}  source position in screen coords
+      //   // pt2:  {x:#, y:#}  target position in screen coords
+      //
+      //   // draw a line from pt1 to pt2
+      //
+      // })
+      //
+      // particleSystem.eachNode(function(node, pt){
+      //   // node: {mass:#, p:{x,y}, name:"", data:{}}
+      //   // pt:   {x:#, y:#}  node position in screen coords
+      //
+      //   // change the node's text position to pt
+      //
+      // })
+    };
+    return renderer;
+  };
 
   /* *********************************************************************** */
   /*  Utilities -- a collection of application-wide utility functions.       */
