@@ -40,9 +40,7 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GraphNode = Backbone.Model.extend({
 
-    initialize: function() {
-      this.set("arborNode", this.options.arborNode);
-    }
+    // Has an attribute: arborNode 
 
   });
 
@@ -51,10 +49,8 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GraphEdge = Backbone.Model.extend({
 
-    initialize: function() {
-      this.set("arborEdge", this.options.arborEdge);
-    }
-
+    // Has an attribute: arborEdge
+    
   });
 
   /* *********************************************************************** */
@@ -62,11 +58,8 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GlyphNode = Backbone.Model.extend({
 
-    initialize: function() {
-      this.set("text", this.options.text);
-      this.set("rect", this.options.rect);
-    }
-
+    // Has attributes: text and rect
+    
   });
 
   /* *********************************************************************** */
@@ -74,10 +67,8 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GlyphEdge = Backbone.Model.extend({
 
-    initialize: function() {
-      this.set("line", this.options.line);
-    }
-
+    // Has an attribute: line
+    
   });
 
   /*  --- Collections ------------------------------------------------------ */
@@ -263,7 +254,6 @@ HubbubApp = (function(){
     
     renderItem: function(item) {  
       var x = item.get("x"), y = item.get("y");
-      //var t = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
 
       var parentItem = this.getParent(item);
 
@@ -463,7 +453,7 @@ HubbubApp = (function(){
       // inform the system of the screen dimensions so it can map coords for us.
       // if the canvas is ever resized, screenSize should be called again with
       // the new dimensions
-      particleSystem.screenSize(canvas.width, canvas.height);
+      particleSystem.screenSize(paper.width, paper.height);
       particleSystem.screenPadding(80); // leave an extra 80px of whitespace per side
     };
 
@@ -511,7 +501,29 @@ HubbubApp = (function(){
     // Build a particle system and set its renderer
     this.particleSystem = arbor.ParticleSystem();
     this.particleSystem.renderer = hubbubApp.Renderer();
-
+    
+    //Loads the entire collection
+    this.loadItems = function() {
+      
+    };
+    
+    this.addItem = function(item) {
+      var x = item.get("x"), y = item.get("y");
+      var arborNode = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
+      var graphNode = new hubbubApp.GraphNode({"arborNode": arborNode});
+      hubbubApp.GraphNodes.add(graphNode);
+    };
+    
+    //
+    this.removeItem = function(item) {
+      
+    };
+    
+    hubbubApp.Items.on("reset", this.loadItems, this);  
+    hubbubApp.Items.on("add", this.addItem, this);
+    hubbubApp.Items.on("remove", this.removeItem, this);
+    
+    // alert ("We're in the layout manager!");
     // Return the newly created layoutManager
     return layoutManager;
   };
