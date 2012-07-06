@@ -15,7 +15,6 @@ HubbubApp = (function(){
 
     initialize: function() {
       this.generateRandomPosition();
-      this.glyphs = { "line":null, "text":null, "rect":null };
     },
     
     validate: function(attrs) {
@@ -26,8 +25,6 @@ HubbubApp = (function(){
     
     move: function(x,y) {
       this.set({"x": x, "y": y}, {silent: true});
-      this.glyphs.text.attr("x", x);
-      this.glyphs.text.attr("y", y);
     },
     
     generateRandomPosition: function() {
@@ -311,10 +308,6 @@ HubbubApp = (function(){
       rect.attr("fill", "#CDD1FC");
       
       text.toFront();
-      
-      item.set(
-        {"glyphs": {"line": line, "rect": rect, "text":text}},
-        {silent:true});
       
       //Pointer to the context of the Forest View
       var that = this;
