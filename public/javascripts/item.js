@@ -181,6 +181,10 @@ HubbubApp = (function(){
     initialize: function() {
       this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
+
+      // Build a particle system and set its renderer
+      this.particleSystem = arbor.ParticleSystem();
+      this.particleSystem.renderer = hubbubApp.Renderer(this.$el);
     },
         
     // Find the bounding box of the current hover menu
@@ -466,8 +470,8 @@ HubbubApp = (function(){
     var layoutManager = {};
 
     // Build a particle system and set its renderer
-    layoutManager.particleSystem = arbor.ParticleSystem();
-    layoutManager.particleSystem.renderer = hubbubApp.Renderer(this.$el);
+//    layoutManager.particleSystem = arbor.ParticleSystem();
+//    layoutManager.particleSystem.renderer = hubbubApp.Renderer(this.$el);
 
     // Return the newly created layoutManager
     return layoutManager;
