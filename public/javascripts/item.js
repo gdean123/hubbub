@@ -260,9 +260,6 @@ HubbubApp = (function(){
       // hook up if not null
       var line = null;
       if(parentItem !== null) {
-//        var u = this.particleSystem.addEdge(
-//          parentItem.get("id"), item.get("id"), {length:0.75});
-
         // Draw a line from the parent to the child
         line = this.paper.path(
           "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
@@ -506,23 +503,36 @@ HubbubApp = (function(){
     this.loadItems = function() {
       
     };
-    
+
+    // Add a graph node (and potentially edge) to represent this item
     this.addItem = function(item) {
-      var x = item.get("x"), y = item.get("y");
-      var arborNode = this.particleSystem.addNode(item.get("id"), {'x':x, 'y':y});
+      var itemId = item.get("id"), parentId = item.get("parent_id"),
+          x = item.get("x"), y = item.get("y");
+
+      // Create a node to represent this item
+      var arborNode = this.particleSystem.addNode(itemId, {'x':x, 'y':y});
       var graphNode = new hubbubApp.GraphNode({"arborNode": arborNode});
       hubbubApp.GraphNodes.add(graphNode);
+
+      // If the item has a parent, create an edge to represent the connection
+      if(parentId !== undefined) {
+        var arborEdge = this.particleSystem.addEdge(
+          parentId, itemId, {length:0.75});
+
+        var graphEdge = new hubbubApp.GraphEdge({"arborEdge": arborEdge});
+        hubbubApp.GraphEdges.add(graphEdge);
+      }
     };
     
-    //
+    // Remove the graph node (and potentially edge) associated with this item
     this.removeItem = function(item) {
       
     };
-    
-    hubbubApp.Items.on("reset", this.loadItems, this);  
-    hubbubApp.Items.on("add", this.addItem, this);
-    hubbubApp.Items.on("remove", this.removeItem, this);
-    
+
+    hubbubApp.Items.bind("reset",  this.loadItems, this);
+    hubbubApp.Items.bind("add",    this.addItem, this);
+    hubbubApp.Items.bind("remove", this.removeItem, this);
+
     // alert ("We're in the layout manager!");
     // Return the newly created layoutManager
     return layoutManager;
