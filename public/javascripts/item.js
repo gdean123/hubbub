@@ -498,10 +498,38 @@ HubbubApp = (function(){
     // Build a particle system and set its renderer
     this.particleSystem = arbor.ParticleSystem();
     this.particleSystem.renderer = hubbubApp.Renderer();
-    
-    //Loads the entire collection
-    this.loadItems = function() {
-      
+
+    // Create a GraphNode to represent a given Item
+    this.addGraphNode = function(itemId, x, y) {
+      var arborNode = this.particleSystem.addNode(itemId, {'x':x, 'y':y});
+      var graphNode = new hubbubApp.GraphNode({"arborNode": arborNode});
+      hubbubApp.GraphNodes.add(graphNode);
+    };
+
+    // Create a GraphEdge to represent a given parent-child relationship
+    this.addGraphEdge = function(itemId, parentId) {
+      if (parentId !== null &&
+          parentId !== undefined) {
+        var arborEdge = this.particleSystem.addEdge(
+          parentId, itemId, {length:0.75});
+
+        var graphEdge = new hubbubApp.GraphEdge({"arborEdge":arborEdge});
+        hubbubApp.GraphEdges.add(graphEdge);
+      }
+    };
+
+    // Load the entire collection
+    this.loadItems = function(items) {
+
+      // Create a graph node for each item, and add it to the collection
+      items.each(function(item){
+        this.addGraphNode(item.get("id"), item.get("x"), item.get("y"));
+      }, this);
+
+      // Create an edge to represent each parent-child relationship
+      items.each(function(item){
+        this.addGraphEdge(item.get("id"), item.get("parent_id"));
+      }, this);
     };
 
     // Add a graph node (and potentially edge) to represent this item
@@ -509,19 +537,11 @@ HubbubApp = (function(){
       var itemId = item.get("id"), parentId = item.get("parent_id"),
           x = item.get("x"), y = item.get("y");
 
-      // Create a node to represent this item
-      var arborNode = this.particleSystem.addNode(itemId, {'x':x, 'y':y});
-      var graphNode = new hubbubApp.GraphNode({"arborNode": arborNode});
-      hubbubApp.GraphNodes.add(graphNode);
+      // Create a graph node for this item, and add it to the collection
+      this.addGraphNode(itemId, x, y);
 
       // If the item has a parent, create an edge to represent the connection
-      if(parentId !== undefined) {
-        var arborEdge = this.particleSystem.addEdge(
-          parentId, itemId, {length:0.75});
-
-        var graphEdge = new hubbubApp.GraphEdge({"arborEdge": arborEdge});
-        hubbubApp.GraphEdges.add(graphEdge);
-      }
+      this.addGraphEdge(itemId, parentId);
     };
     
     // Remove the graph node (and potentially edge) associated with this item
