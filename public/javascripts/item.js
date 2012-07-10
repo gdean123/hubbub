@@ -549,18 +549,47 @@ HubbubApp = (function(){
       
     };
 
+    // Listen for changes to the Items collection
     hubbubApp.Items.bind("reset",  this.loadItems, this);
     hubbubApp.Items.bind("add",    this.addItem, this);
     hubbubApp.Items.bind("remove", this.removeItem, this);
 
-    // alert ("We're in the layout manager!");
     // Return the newly created layoutManager
     return layoutManager;
   };
 
   // Construct a new layout manager at the top level
   hubbubApp.LayoutListener = new hubbubApp.LayoutManager();
+  
+  /* *********************************************************************** */
+  /*  GlyphManager - Renders the glyphs to Raphael's paper.                  */
+  /* *********************************************************************** */
+  hubbubApp.GlyphManager = function() {
 
+    // Create a new glyphManager to populate and return
+    var glyphManager = {};
+
+    // Add text to represent a newly-created item
+    this.addItem = function(graphNode) {
+
+    };
+
+    // Add a line to represent the new parent-child relationship
+    this.addEdge = function (graphEdge) {
+
+    };
+
+    // Listen for changes to the GraphNodes and GraphEdges collections
+    hubbubApp.GraphNodes.bind("add",  this.addItem, this);
+    hubbubApp.GraphEdges.bind("add",  this.addEdge, this);
+
+    // Return the newly created glyphManager
+    return glyphManager;
+  };
+
+  // Construct a new glyph manager at the top level
+  hubbubApp.GlyphListener = new hubbubApp.GlyphManager();
+  
   /* *********************************************************************** */
   /*  Utilities -- a collection of application-wide utility functions.       */
   /* *********************************************************************** */
