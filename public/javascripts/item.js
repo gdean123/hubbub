@@ -584,9 +584,9 @@ HubbubApp = (function(){
         rect.toFront();
         text.toFront();
 
-//        // Create a new glyph node and add it to our collection
-//        var glyphNode = new hubbubApp.GlyphNode({"text": text, "rect": rect});
-//        hubbubApp.GlyphNodes.add(glyphNode);
+        // Create a new glyph node and add it to our collection
+        var glyphNode = new hubbubApp.GlyphNode({"text": text, "rect": rect});
+        hubbubApp.GlyphNodes.add(glyphNode);
       }
     };
 
