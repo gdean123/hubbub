@@ -573,32 +573,33 @@ HubbubApp = (function(){
         var textHeight = text.getBBox().height + 15;
 
         // Create rectangle for visual effect
-        var rect = this.paper.rect(x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
+        var rect = this.paper.rect(
+          x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
+
         rect.attr("r", "10");
         rect.attr("stroke-width", "2");
         rect.attr("stroke", "#626CF7");
         rect.attr("fill", "#CDD1FC");
-    
+
+        rect.toFront();
         text.toFront();
       }
     };
 
     // Add a line to represent the new parent-child relationship
     this.addEdge = function (graphEdge) {
-      
-      // var x = item.get("x"), y = item.get("y");
-      // var parentItem = this.getParent(item);
-      // 
-      // // hook up if not null
-      // var line = null;
-      // if(parentItem !== null) {
-      //   // Draw a line from the parent to the child
-      //   line = this.paper.path(
-      //     "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
-      //     line.attr("stroke-width", "2");
-      //     line.attr("stroke", "#626CF7");
-      //   line.toBack();  
-      // }
+
+      var source = graphEdge.get("arborEdge").source;
+      var target = graphEdge.get("arborEdge").target;
+
+       // Draw a line from the parent to the child
+       line = this.paper.path(
+         "M" + source.p.x + " " + source.p.y + "L" +
+               target.p.x + " " + target.p.x);
+
+       line.attr("stroke-width", "2");
+       line.attr("stroke", "#626CF7");
+       line.toBack();
     };
 
     // Listen for changes to the GraphNodes and GraphEdges collections
