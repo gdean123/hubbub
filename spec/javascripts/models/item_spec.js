@@ -1,6 +1,7 @@
 describe("Item", function() {
   var hubbubApp;
   beforeEach(function(){
+    loadFixtures("_main-template.html");
     hubbubApp = HubbubApp();
 	  this.item = new hubbubApp.Item({
       "description": "test",
