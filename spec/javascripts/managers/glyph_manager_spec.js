@@ -19,4 +19,16 @@ describe("Glyph Manager", function() {
     expect(hubbubApp.GlyphNodes.length).toEqual(1);
   });
 
+  it("should create a glyph edge to represent new graph edges", function() {
+    this.childItem = new hubbubApp.Item({
+          "id": "ab7bbf72-7810-4273-b6e6-ff5916341a48",
+          "description": "child",
+          "parent_id": this.item.get("id")
+        });
+
+      hubbubApp.Items.add(this.item);
+      hubbubApp.Items.add(this.childItem);
+      expect(hubbubApp.GlyphEdges.length).toEqual(1);
+  });
+
 });

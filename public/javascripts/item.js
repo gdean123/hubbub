@@ -605,9 +605,9 @@ HubbubApp = (function(){
        line.attr("stroke", "#626CF7");
        line.toBack();
 
-//      // Create a new glyph edge and add it to our collection
-//      var glyphEdge = new hubbubApp.GlyphEdge({"line": line});
-//      hubbubApp.GlyphEdges.add(glyphEdge);
+      // Create a new glyph edge and add it to our collection
+      var glyphEdge = new hubbubApp.GlyphEdge({"line": line});
+      hubbubApp.GlyphEdges.add(glyphEdge);
     };
 
     // Listen for changes to the GraphNodes and GraphEdges collections
