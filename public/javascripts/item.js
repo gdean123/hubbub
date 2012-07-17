@@ -33,7 +33,19 @@ HubbubApp = (function(){
         y: Math.floor(Math.random()*342)}, 
         {silent: true});
     }
+  }, {
+    findById: function(id) {
+      var foundItem = null;
+      hubbubApp.Items.each( function(item) {
+        if (item.id == id) {
+          foundItem = item;
+        }
+      });
+      return foundItem;
+    }
   });
+  
+
 
   /* *********************************************************************** */
   /*  GraphNode Model - wrapper around an Arbor.js node.                     */
@@ -167,7 +179,6 @@ HubbubApp = (function(){
     },
 
     initialize: function() {
-      this.paper = new Raphael('forest', this.$el.width(), this.$el.height());
       hubbubApp.Items.bind('all', this.render, this);
     },
         
@@ -254,64 +265,37 @@ HubbubApp = (function(){
     
     renderItem: function(item) {  
       var x = item.get("x"), y = item.get("y");
-
       var parentItem = this.getParent(item);
 
-      // hook up if not null
-      var line = null;
-      if(parentItem !== null) {
-        // Draw a line from the parent to the child
-        line = this.paper.path(
-          "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
-          line.attr("stroke-width", "2");
-          line.attr("stroke", "#626CF7");
-        line.toBack();  
-      }
-
-      // Set the text
-      var text = this.paper.text(x, y, item.get("description"));
-      text.attr("font-size", 32);
-
-      var textWidth = text.getBBox().width + 15;
-      var textHeight = text.getBBox().height + 15;
-
-      // Create rectangle for visual effect
-      var rect = this.paper.rect(x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
-      rect.attr("r", "10");
-      rect.attr("stroke-width", "2");
-      rect.attr("stroke", "#626CF7");
-      rect.attr("fill", "#CDD1FC");
-      
-      text.toFront();
-      
       //Pointer to the context of the Forest View
-      var that = this;
-      text.mouseover(function(){
-        
-        // Store the current text so that we can destroy the hover menu later
-        that.currentText = this;
-        
-        // Clean up any open hover menus
-        try {          
-          $(".hover_menu").parent().empty().remove();          
-        } catch (err) {
-          // don't complain
-        }
-        
-        // Create a new hover menu
-        // To compensate the size of the text box we added few more pixels
-        var hoverMenuView = new hubbubApp.HoverMenuView({
-	        showAddItemDialog: that.options.showAddItemDialog,
-          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
-        });
-
-        // Append it to the DOM
-        $(that.el).last().append($(hoverMenuView.render().el));
-      });
+//      var that = this;
+//      text.mouseover(function(){
+//
+//        // Store the current text so that we can destroy the hover menu later
+//        that.currentText = this;
+//
+//        // Clean up any open hover menus
+//        try {
+//          $(".hover_menu").parent().empty().remove();
+//        } catch (err) {
+//          // don't complain
+//        }
+//
+//        // Create a new hover menu
+//        // To compensate the size of the text box we added few more pixels
+//        var hoverMenuView = new hubbubApp.HoverMenuView({
+//	        showAddItemDialog: that.options.showAddItemDialog,
+//          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
+//        });
+//
+//        // Append it to the DOM
+//        $(that.el).last().append($(hoverMenuView.render().el));
+//      });
     },
     
     render: function() {
-      this.paper.clear();
+      // Do not know where to move it to yet! 
+      // this.paper.clear();
       hubbubApp.Items.each(this.renderItem, this);
     }
   });
@@ -569,14 +553,52 @@ HubbubApp = (function(){
     // Create a new glyphManager to populate and return
     var glyphManager = {};
 
+    this.paper = new Raphael(
+      'forest', $('#forest').width(), $('#forest').height());
+
     // Add text to represent a newly-created item
     this.addItem = function(graphNode) {
+      
+      var arborNode = graphNode.get("arborNode");
+      var x = arborNode.p.x, y = arborNode.p.y;
+  
+      var foundItem = hubbubApp.Item.findById(arborNode.name);
+      
+      if (foundItem !== null) {
+        // Set the text
+        var text = this.paper.text(x, y, foundItem.get("description"));
+        text.attr("font-size", 32);
 
+        var textWidth = text.getBBox().width + 15;
+        var textHeight = text.getBBox().height + 15;
+
+        // Create rectangle for visual effect
+        var rect = this.paper.rect(x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
+        rect.attr("r", "10");
+        rect.attr("stroke-width", "2");
+        rect.attr("stroke", "#626CF7");
+        rect.attr("fill", "#CDD1FC");
+    
+        text.toFront();
+      }
     };
 
     // Add a line to represent the new parent-child relationship
     this.addEdge = function (graphEdge) {
-
+      
+      // var x = item.get("x"), y = item.get("y");
+      // var parentItem = this.getParent(item);
+      // 
+      // // hook up if not null
+      // var line = null;
+      // if(parentItem !== null) {
+      //   // Draw a line from the parent to the child
+      //   line = this.paper.path(
+      //     "M"+parentItem.get("x")+" "+parentItem.get("y")+"L"+x+" "+y);
+      //     line.attr("stroke-width", "2");
+      //     line.attr("stroke", "#626CF7");
+      //   line.toBack();  
+      // }
     };
 
     // Listen for changes to the GraphNodes and GraphEdges collections
