@@ -583,6 +583,10 @@ HubbubApp = (function(){
 
         rect.toFront();
         text.toFront();
+
+//        // Create a new glyph node and add it to our collection
+//        var glyphNode = new hubbubApp.GlyphNode({"text": text, "rect": rect});
+//        hubbubApp.GlyphNodes.add(glyphNode);
       }
     };
 
@@ -600,6 +604,10 @@ HubbubApp = (function(){
        line.attr("stroke-width", "2");
        line.attr("stroke", "#626CF7");
        line.toBack();
+
+//      // Create a new glyph edge and add it to our collection
+//      var glyphEdge = new hubbubApp.GlyphEdge({"line": line});
+//      hubbubApp.GlyphEdges.add(glyphEdge);
     };
 
     // Listen for changes to the GraphNodes and GraphEdges collections
