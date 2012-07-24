@@ -33,19 +33,7 @@ HubbubApp = (function(){
         y: Math.floor(Math.random()*342)}, 
         {silent: true});
     }
-  }, {
-    findById: function(id) {
-      var foundItem = null;
-      hubbubApp.Items.each( function(item) {
-        if (item.id == id) {
-          foundItem = item;
-        }
-      });
-      return foundItem;
-    }
   });
-  
-
 
   /* *********************************************************************** */
   /*  GraphNode Model - wrapper around an Arbor.js node.                     */
@@ -562,7 +550,7 @@ HubbubApp = (function(){
       var arborNode = graphNode.get("arborNode");
       var x = arborNode.p.x, y = arborNode.p.y;
   
-      var foundItem = hubbubApp.Item.findById(arborNode.name);
+      var foundItem = hubbubApp.Items.get(arborNode.name);
       
       if (foundItem !== null) {
         // Set the text
