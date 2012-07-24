@@ -5,6 +5,8 @@ describe("Glyph Manager", function() {
     loadFixtures("_main-template.html");
 
     hubbubApp = HubbubApp();
+    this.appView = new hubbubApp.AppView();
+
 	  this.item = new hubbubApp.Item({
       "description": "test",
       "parent_id": null,
@@ -17,6 +19,7 @@ describe("Glyph Manager", function() {
   it("should create a glyph node to represent new graph nodes", function() {
     hubbubApp.Items.add(this.item);               // Creates a new graph node
     expect(hubbubApp.GlyphNodes.length).toEqual(1);
+    expect($("svg text tspan")).toHaveText('test');
   });
 
   it("should create a glyph edge to represent new graph edges", function() {
@@ -29,6 +32,7 @@ describe("Glyph Manager", function() {
       hubbubApp.Items.add(this.item);
       hubbubApp.Items.add(this.childItem);
       expect(hubbubApp.GlyphEdges.length).toEqual(1);
+      expect($("svg path")).toExist();
   });
 
 });

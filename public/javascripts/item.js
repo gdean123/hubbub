@@ -155,140 +155,6 @@ HubbubApp = (function(){
   });
 
   /* *********************************************************************** */
-  /*  Forest View -- the entire canvas area created by Raphael.              */
-  /* *********************************************************************** */
-  hubbubApp.ForestView = Backbone.View.extend({
-
-    el: '#forest',
-
-    // The DOM events specific to an item.
-    events: {
-      "mousemove": "refreshHoverMenu"
-    },
-
-    initialize: function() {
-      hubbubApp.Items.bind('all', this.render, this);
-    },
-        
-    // Find the bounding box of the current hover menu
-    getHoverBox: function() {
-      if(this.currentText) {
-        var hoverWidth = $(".hover_menu").width();
-        var hoverHeight = $(".hover_menu").height();
-        var hoverLeft = $(".hover_menu").position().left;
-        var hoverTop = $(".hover_menu").position().top;
-        
-        var hoverRight = hoverLeft + hoverWidth;
-        var hoverBottom = hoverTop + hoverHeight;
-
-        return {top:hoverTop,
-                left:hoverLeft,
-                right:hoverRight,
-                bottom:hoverBottom};
-      }
-    },
-
-    // Find the minimal bounding box that contains the both the hover menu
-    // and the current item text
-    getBoundingBox: function() {
-      var hoverBox = this.getHoverBox();         // Hover menu bounding box
-      var itemBox = this.currentText.getBBox(); // Item's bounding box
-      
-      // TODO We need to address why this needs a +86 on the y value
-      return {top:    Math.min(hoverBox.top,    itemBox.y+86), // y  = top
-              left:   Math.min(hoverBox.left,   itemBox.x),    // x  = left
-              right:  Math.max(hoverBox.right,  itemBox.x2),   // x2 = right
-              bottom: Math.max(hoverBox.bottom, itemBox.y2)};  // y2 = bottom
-    },
-
-    getPaddedBoundingBox: function() {
-      var boundingBox = this.getBoundingBox();
-      var PADDING = 20;
-
-      return {top:    boundingBox.top    - PADDING,
-              left:   boundingBox.left   - PADDING,
-              right:  boundingBox.right  + PADDING,
-              bottom: boundingBox.bottom + PADDING};
-    },
-
-    // Check whether or not the given point is outside of the given rectangle
-    isOutside: function(point, rectangle) {
-      return point.x < rectangle.left  ||
-             point.x > rectangle.right ||
-             point.y < rectangle.top   ||
-             point.y > rectangle.bottom;
-    },
-
-    refreshHoverMenu: function(e) {
-      if(this.currentText) {  
-        var paddedBoundingBox = this.getPaddedBoundingBox();
-        var cursor = {
-          x: e.pageX-20,
-          y: e.pageY-95
-        };
-
-        // If the cursor is outside of the bounding box, destroy the hover menu
-        if (this.isOutside(cursor, paddedBoundingBox))
-        {
-          // Destroy the hover menu
-          $(".hover_menu").parent().empty().remove();
-
-          // There is no longer a current text
-          this.currentText = null;
-        }
-      }
-    },
-    
-    // Find the parent of the given item
-    getParent: function(item) {
-      var output = null;
-      hubbubApp.Items.each(function(currentItem) {
-        if(item.get("parent_id") === currentItem.get("id")) {
-          output = currentItem;
-        } 
-      });
-
-      return output;      
-    },
-    
-    renderItem: function(item) {  
-      var x = item.get("x"), y = item.get("y");
-      var parentItem = this.getParent(item);
-
-      //Pointer to the context of the Forest View
-//      var that = this;
-//      text.mouseover(function(){
-//
-//        // Store the current text so that we can destroy the hover menu later
-//        that.currentText = this;
-//
-//        // Clean up any open hover menus
-//        try {
-//          $(".hover_menu").parent().empty().remove();
-//        } catch (err) {
-//          // don't complain
-//        }
-//
-//        // Create a new hover menu
-//        // To compensate the size of the text box we added few more pixels
-//        var hoverMenuView = new hubbubApp.HoverMenuView({
-//	        showAddItemDialog: that.options.showAddItemDialog,
-//          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
-//        });
-//
-//        // Append it to the DOM
-//        $(that.el).last().append($(hoverMenuView.render().el));
-//      });
-    },
-    
-    render: function() {
-      // Do not know where to move it to yet! 
-      // this.paper.clear();
-      hubbubApp.Items.each(this.renderItem, this);
-    }
-  });
-
-  /* *********************************************************************** */
   /*  Add Item View -- the dialog to create an item.                         */
   /* *********************************************************************** */
   hubbubApp.AddItemView = Backbone.View.extend({
@@ -374,8 +240,12 @@ HubbubApp = (function(){
       
       // Create all subviews
       this.addItemView = new hubbubApp.AddItemView();
-      this.forestView =
-        new hubbubApp.ForestView({showAddItemDialog: this.addItemView.show});
+
+      // Construct all managers
+      this.hoverMenuManager = new hubbubApp.HoverMenuManager(
+        {showAddItemDialog: this.addItemView.show});
+
+      this.glyphListener = new hubbubApp.GlyphManager();
 
       // fetch() calls the "reset" on the Items collection
       hubbubApp.Items.fetch();
@@ -458,6 +328,109 @@ HubbubApp = (function(){
     };
     return renderer;
   };
+
+  /* *********************************************************************** */
+  /*  Hover Menu Manager -- handle showing and hiding of the hover menu.     */
+  /* *********************************************************************** */
+  hubbubApp.HoverMenuManager = function() {
+
+    var hoverMenuManager = {};
+
+    // Find the bounding box of the current hover menu
+    this.getHoverBox = function() {
+      if(this.currentText) {
+        var hoverWidth = $(".hover_menu").width();
+        var hoverHeight = $(".hover_menu").height();
+        var hoverLeft = $(".hover_menu").position().left;
+        var hoverTop = $(".hover_menu").position().top;
+
+        var hoverRight = hoverLeft + hoverWidth;
+        var hoverBottom = hoverTop + hoverHeight;
+
+        return {top:hoverTop,
+                left:hoverLeft,
+                right:hoverRight,
+                bottom:hoverBottom};
+      }
+    };
+
+    // Find the minimal bounding box that contains the both the hover menu
+    // and the current item text
+    this.getBoundingBox = function() {
+      var hoverBox = this.getHoverBox();         // Hover menu bounding box
+      var itemBox = this.currentText.getBBox(); // Item's bounding box
+
+      // TODO We need to address why this needs a +86 on the y value
+      return {top:    Math.min(hoverBox.top,    itemBox.y+86), // y  = top
+              left:   Math.min(hoverBox.left,   itemBox.x),    // x  = left
+              right:  Math.max(hoverBox.right,  itemBox.x2),   // x2 = right
+              bottom: Math.max(hoverBox.bottom, itemBox.y2)};  // y2 = bottom
+    };
+
+    this.getPaddedBoundingBox = function() {
+      var boundingBox = this.getBoundingBox();
+      var PADDING = 20;
+
+      return {top:    boundingBox.top    - PADDING,
+              left:   boundingBox.left   - PADDING,
+              right:  boundingBox.right  + PADDING,
+              bottom: boundingBox.bottom + PADDING};
+    };
+
+    // Check whether or not the given point is outside of the given rectangle
+    this.isOutside = function(point, rectangle) {
+      return point.x < rectangle.left  ||
+             point.x > rectangle.right ||
+             point.y < rectangle.top   ||
+             point.y > rectangle.bottom;
+    };
+
+//    var cursor = {
+//      x: e.pageX-20,
+//      y: e.pageY-95
+//    };
+    hoverMenuManager.refreshHoverMenu = function(cursorX, cursorY) {
+      if(this.currentText) {
+        var paddedBoundingBox = this.getPaddedBoundingBox();
+
+        // If the cursor is outside of the bounding box, destroy the hover menu
+        if (this.isOutside({x:cursorX, y:cursorY}, paddedBoundingBox))
+        {
+          // Destroy the hover menu
+          $(".hover_menu").parent().empty().remove();
+
+          // There is no longer a current text
+          this.currentText = null;
+        }
+      }
+    };
+
+    return hoverMenuManager;
+  };
+          //Pointer to the context of the Forest View
+//      var that = this;
+//      text.mouseover(function(){
+//
+//        // Store the current text so that we can destroy the hover menu later
+//        that.currentText = this;
+//
+//        // Clean up any open hover menus
+//        try {
+//          $(".hover_menu").parent().empty().remove();
+//        } catch (err) {
+//          // don't complain
+//        }
+//
+//        // Create a new hover menu
+//        // To compensate the size of the text box we added few more pixels
+//        var hoverMenuView = new hubbubApp.HoverMenuView({
+//	        showAddItemDialog: that.options.showAddItemDialog,
+//          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
+//        });
+//
+//        // Append it to the DOM
+//        $(that.el).last().append($(hoverMenuView.render().el));
+//      });
 
   /* *********************************************************************** */
   /*  LayoutManager - Compute the position of objects over time.             */
@@ -606,9 +579,6 @@ HubbubApp = (function(){
     return glyphManager;
   };
 
-  // Construct a new glyph manager at the top level
-  hubbubApp.GlyphListener = new hubbubApp.GlyphManager();
-  
   /* *********************************************************************** */
   /*  Utilities -- a collection of application-wide utility functions.       */
   /* *********************************************************************** */

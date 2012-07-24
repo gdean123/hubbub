@@ -3,7 +3,10 @@ describe("Layout Manager", function() {
   var hubbubApp;
   beforeEach(function(){
     loadFixtures("_main-template.html");
+
     hubbubApp = HubbubApp();
+    this.appView = new hubbubApp.AppView();
+
 	  this.item = new hubbubApp.Item({
       "description": "test",
       "parent_id": null,
