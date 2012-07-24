@@ -389,6 +389,8 @@ HubbubApp = (function(){
 //      x: e.pageX-20,
 //      y: e.pageY-95
 //    };
+
+    // This function needs help! Call showHoverMenu from this function.
     hoverMenuManager.refreshHoverMenu = function(cursorX, cursorY) {
       if(this.currentText) {
         var paddedBoundingBox = this.getPaddedBoundingBox();
@@ -405,31 +407,36 @@ HubbubApp = (function(){
       }
     };
 
+    // This function needs help!
+    this.showHoverMenu = function(cursorX, cursorY) {
+      // Store the current text so that we can destroy the hover menu later
+      that.currentText = this;
+
+      // Clean up any open hover menus
+      try {
+        $(".hover_menu").parent().empty().remove();
+      } catch (err) {
+        // don't complain
+      }
+
+      // Create a new hover menu
+      // To compensate the size of the text box we added few more pixels
+      var hoverMenuView = new hubbubApp.HoverMenuView({
+        showAddItemDialog: that.options.showAddItemDialog,
+        top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
+      });
+
+      // Append it to the DOM
+      $(that.el).last().append($(hoverMenuView.render().el));
+    };
+
     return hoverMenuManager;
   };
           //Pointer to the context of the Forest View
 //      var that = this;
 //      text.mouseover(function(){
 //
-//        // Store the current text so that we can destroy the hover menu later
-//        that.currentText = this;
 //
-//        // Clean up any open hover menus
-//        try {
-//          $(".hover_menu").parent().empty().remove();
-//        } catch (err) {
-//          // don't complain
-//        }
-//
-//        // Create a new hover menu
-//        // To compensate the size of the text box we added few more pixels
-//        var hoverMenuView = new hubbubApp.HoverMenuView({
-//	        showAddItemDialog: that.options.showAddItemDialog,
-//          top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
-//        });
-//
-//        // Append it to the DOM
-//        $(that.el).last().append($(hoverMenuView.render().el));
 //      });
 
   /* *********************************************************************** */
