@@ -58,7 +58,17 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GlyphNode = Backbone.Model.extend({
 
-    // Has attributes: text and rect
+    // Has attributes:
+    // id -- id of the associated item
+    // text, rect -- raphael.js glyphs
+    // boundingBox -- JSON object with left, right, top, and bottom
+
+    containsPoint: function(x, y){
+      var bb = this.get("boundingBox");
+
+      return x > bb.left && x < bb.right &&
+             y > bb.top  && y < bb.bottom;
+    }
     
   });
 
@@ -79,7 +89,7 @@ HubbubApp = (function(){
   hubbubApp.ItemList = Backbone.Collection.extend({
     // Reference to this collection's model.
     model: hubbubApp.Item,
-    url :'/items'    
+    url :'/items'
   });
 
   /* *********************************************************************** */
@@ -103,7 +113,18 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   hubbubApp.GlyphNodeList = Backbone.Collection.extend({
     // Reference to this collection's model.
-    model: hubbubApp.GlyphNode
+    model: hubbubApp.GlyphNode,
+
+    findByPosition: function(x, y) {
+      var foundGlyphNode = null;
+      this.each(function(glyphNode){
+        if (glyphNode.containsPoint(x, y)) {
+          foundGlyphNode = glyphNode;
+        }
+      });
+
+      return foundGlyphNode;
+    }
   });
 
   /* *********************************************************************** */
@@ -242,8 +263,8 @@ HubbubApp = (function(){
       this.addItemView = new hubbubApp.AddItemView();
 
       // Construct all managers
-      this.hoverMenuManager = new hubbubApp.HoverMenuManager(
-        {showAddItemDialog: this.addItemView.show});
+      this.hoverMenuManager =
+        new hubbubApp.HoverMenuManager(this.addItemView.show);
 
       this.glyphListener = new hubbubApp.GlyphManager();
 
@@ -332,7 +353,7 @@ HubbubApp = (function(){
   /* *********************************************************************** */
   /*  Hover Menu Manager -- handle showing and hiding of the hover menu.     */
   /* *********************************************************************** */
-  hubbubApp.HoverMenuManager = function() {
+  hubbubApp.HoverMenuManager = function(showAddItemDialog) {
 
     var hoverMenuManager = {};
 
@@ -391,26 +412,35 @@ HubbubApp = (function(){
 //    };
 
     // This function needs help! Call showHoverMenu from this function.
-    hoverMenuManager.refreshHoverMenu = function(cursorX, cursorY) {
-      if(this.currentText) {
-        var paddedBoundingBox = this.getPaddedBoundingBox();
+    this.refreshHoverMenu = function(cursorX, cursorY) {
+      var glyphNode = hubbubApp.GlyphNodes.findByPosition(cursorX, cursorY);
 
-        // If the cursor is outside of the bounding box, destroy the hover menu
-        if (this.isOutside({x:cursorX, y:cursorY}, paddedBoundingBox))
-        {
-          // Destroy the hover menu
-          $(".hover_menu").parent().empty().remove();
+      if (glyphNode !== null) {
+        var itemId = glyphNode.get("id");
+        var boundingBox = glyphNode.get("boundingBox");
 
-          // There is no longer a current text
-          this.currentText = null;
-        }
+        this.showHoverMenu(itemId, boundingBox.left, boundingBox.bottom);
       }
+
+//      if(this.currentText) {
+//        var paddedBoundingBox = this.getPaddedBoundingBox();
+//
+//        // If the cursor is outside of the bounding box, destroy the hover menu
+//        if (this.isOutside({x:cursorX, y:cursorY}, paddedBoundingBox))
+//        {
+//          // Destroy the hover menu
+//          $(".hover_menu").parent().empty().remove();
+//
+//          // There is no longer a current text
+//          this.currentText = null;
+//        }
+//      }
     };
 
     // This function needs help!
-    this.showHoverMenu = function(cursorX, cursorY) {
+    this.showHoverMenu = function(itemId, x, y) {
       // Store the current text so that we can destroy the hover menu later
-      that.currentText = this;
+      //that.currentText = this;
 
       // Clean up any open hover menus
       try {
@@ -422,13 +452,19 @@ HubbubApp = (function(){
       // Create a new hover menu
       // To compensate the size of the text box we added few more pixels
       var hoverMenuView = new hubbubApp.HoverMenuView({
-        showAddItemDialog: that.options.showAddItemDialog,
-        top: y+100, left:x-25, id: item.get("id")  //Capture the Item id here
+        showAddItemDialog: showAddItemDialog,
+        top: y+100, left:x-25, id: itemId  //Capture the Item id here
       });
 
       // Append it to the DOM
-      $(that.el).last().append($(hoverMenuView.render().el));
+      $('#forest').append($(hoverMenuView.render().el));
     };
+
+    // Refresh the hover menu whenever the mouse moves
+    var that = this;
+    $('#forest').mousemove(function(e){
+      that.refreshHoverMenu(e.pageX-20, e.pageY-95);
+    });
 
     return hoverMenuManager;
   };
@@ -541,8 +577,16 @@ HubbubApp = (function(){
         var textHeight = text.getBBox().height + 15;
 
         // Create rectangle for visual effect
+        var boundingBox = {
+          left:   x-(textWidth/2),
+          right:  x+(textWidth/2),
+          top:    y-(textHeight/2),
+          bottom: y+(textHeight/2)};
+
         var rect = this.paper.rect(
-          x-(textWidth/2), y-(textHeight/2), textWidth, textHeight);
+          boundingBox.left, boundingBox.top,
+          boundingBox.right  - boundingBox.left,
+          boundingBox.bottom - boundingBox.top);
 
         rect.attr("r", "10");
         rect.attr("stroke-width", "2");
@@ -553,7 +597,10 @@ HubbubApp = (function(){
         text.toFront();
 
         // Create a new glyph node and add it to our collection
-        var glyphNode = new hubbubApp.GlyphNode({"text": text, "rect": rect});
+        var glyphNode = new hubbubApp.GlyphNode({
+          id: arborNode.name, text: text, rect: rect,
+          boundingBox: boundingBox});
+
         hubbubApp.GlyphNodes.add(glyphNode);
       }
     };
