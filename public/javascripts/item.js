@@ -359,7 +359,7 @@ HubbubApp = (function(){
 
     // Find the bounding box of the current hover menu
     this.getHoverBox = function() {
-      if(this.currentText) {
+      if(this.currentGlyphNode) {
         var hoverWidth = $(".hover_menu").width();
         var hoverHeight = $(".hover_menu").height();
         var hoverLeft = $(".hover_menu").position().left;
@@ -377,19 +377,19 @@ HubbubApp = (function(){
 
     // Find the minimal bounding box that contains the both the hover menu
     // and the current item text
-    this.getBoundingBox = function() {
+    this.getBoundingBox = function(glyphNode) {
       var hoverBox = this.getHoverBox();         // Hover menu bounding box
-      var itemBox = this.currentText.getBBox(); // Item's bounding box
+      var itemBox = glyphNode.get("boundingBox"); // Item's bounding box
 
       // TODO We need to address why this needs a +86 on the y value
-      return {top:    Math.min(hoverBox.top,    itemBox.y+86), // y  = top
-              left:   Math.min(hoverBox.left,   itemBox.x),    // x  = left
-              right:  Math.max(hoverBox.right,  itemBox.x2),   // x2 = right
-              bottom: Math.max(hoverBox.bottom, itemBox.y2)};  // y2 = bottom
+      return {top:    Math.min(hoverBox.top,    itemBox.top), // y  = top
+              left:   Math.min(hoverBox.left,   itemBox.left),    // x  = left
+              right:  Math.max(hoverBox.right,  itemBox.right),   // x2 = right
+              bottom: Math.max(hoverBox.bottom, itemBox.bottom)};  // y2 = bottom
     };
 
-    this.getPaddedBoundingBox = function() {
-      var boundingBox = this.getBoundingBox();
+    this.getPaddedBoundingBox = function(currentGlyphNode) {
+      var boundingBox = this.getBoundingBox(currentGlyphNode);
       var PADDING = 20;
 
       return {top:    boundingBox.top    - PADDING,
@@ -406,41 +406,31 @@ HubbubApp = (function(){
              point.y > rectangle.bottom;
     };
 
-//    var cursor = {
-//      x: e.pageX-20,
-//      y: e.pageY-95
-//    };
-
     // This function needs help! Call showHoverMenu from this function.
     this.refreshHoverMenu = function(cursorX, cursorY) {
       var glyphNode = hubbubApp.GlyphNodes.findByPosition(cursorX, cursorY);
 
       if (glyphNode !== null) {
-        var itemId = glyphNode.get("id");
-        var boundingBox = glyphNode.get("boundingBox");
+        this.showHoverMenu(glyphNode);
+      } else if(this.currentGlyphNode){
+        var boundingBox = this.getPaddedBoundingBox(this.currentGlyphNode);
+        if (this.isOutside({x:cursorX, y:cursorY}, boundingBox)) {
+           // Destroy the hover menu
+           $(".hover_menu").parent().empty().remove();
 
-        this.showHoverMenu(itemId, boundingBox.left, boundingBox.bottom);
+           // There is no longer a current text
+           this.currentGlyphNode = null;
+        }        
       }
-
-//      if(this.currentText) {
-//        var paddedBoundingBox = this.getPaddedBoundingBox();
-//
-//        // If the cursor is outside of the bounding box, destroy the hover menu
-//        if (this.isOutside({x:cursorX, y:cursorY}, paddedBoundingBox))
-//        {
-//          // Destroy the hover menu
-//          $(".hover_menu").parent().empty().remove();
-//
-//          // There is no longer a current text
-//          this.currentText = null;
-//        }
-//      }
     };
 
     // This function needs help!
-    this.showHoverMenu = function(itemId, x, y) {
+    this.showHoverMenu = function(glyphNode) {
+      var itemId = glyphNode.get("id");
+      var boundingBox = glyphNode.get("boundingBox");
+      
       // Store the current text so that we can destroy the hover menu later
-      //that.currentText = this;
+      this.currentGlyphNode = glyphNode;
 
       // Clean up any open hover menus
       try {
@@ -453,7 +443,7 @@ HubbubApp = (function(){
       // To compensate the size of the text box we added few more pixels
       var hoverMenuView = new hubbubApp.HoverMenuView({
         showAddItemDialog: showAddItemDialog,
-        top: y+100, left:x-25, id: itemId  //Capture the Item id here
+        top: boundingBox.bottom+83, left:boundingBox.left+10, id: itemId  //Capture the Item id here
       });
 
       // Append it to the DOM
@@ -463,7 +453,7 @@ HubbubApp = (function(){
     // Refresh the hover menu whenever the mouse moves
     var that = this;
     $('#forest').mousemove(function(e){
-      that.refreshHoverMenu(e.pageX-20, e.pageY-95);
+      that.refreshHoverMenu(e.pageX-20, e.pageY-180);
     });
 
     return hoverMenuManager;
